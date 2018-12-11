@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  region: MyString
+  purity: MyString
+  packing: MyString
+  date: MyString
+  value: 1.5
+  total_tons: 1
+
+two:
+  region: MyString
+  purity: MyString
+  packing: MyString
+  date: MyString
+  value: 1.5
+  total_tons: 1

@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  date: MyString
+  value: 1.5
+  material: MyString
+  total_tons: 1
+
+two:
+  date: MyString
+  value: 1.5
+  material: MyString
+  total_tons: 1
