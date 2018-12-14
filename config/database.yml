@@ -32,6 +32,14 @@ development:
   port: 5432
   password: 676cf1e2f9b0c61331296b8ebcffdca5e840dc22500a427760843efce747dc35
 
+  # 
+  # adapter: postgresql
+  # encoding: unicode
+  # host: localhost
+  # database: DPLDashboard_development
+  # username: postgres
+  # port: 5432
+  # password: postgres
 
 
   # The specified database role being used to connect to postgres.

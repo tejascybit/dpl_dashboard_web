@@ -1,4 +1,4 @@
 class Inventory < ApplicationRecord
   belongs_to :product
-  belongs_to :tanks
+  belongs_to :tank
 end

@@ -99,9 +99,7 @@ ActiveRecord::Schema.define(version: 2018_12_11_070735) do
 
   create_table "tanks", force: :cascade do |t|
     t.integer "product_id"
-    t.string "date"
-    t.float "value"
-    t.string "material"
+    t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
