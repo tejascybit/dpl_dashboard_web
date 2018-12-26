@@ -14,5 +14,6 @@
 //= require jquery_ujs
 //= require twitter/bootstrap
 //= require turbolinks
-
-
+//= require default
+//= require pickadate/picker
+//= require pickadate/picker.date

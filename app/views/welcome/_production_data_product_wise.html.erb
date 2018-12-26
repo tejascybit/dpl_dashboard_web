@@ -1,0 +1,36 @@
+
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          Production Data Product Wise
+        </div>
+        <div class="card-body no-padding">
+          <div class="table-responsive">
+            <table class="table card-tdefaultable">
+              <thead>
+                <tr>
+                  <th>Products</th>
+                  <th>Quantity(MT)</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @products.each do |pro| %>
+                  <tr>
+                    <td><%= pro.name %></td>
+                    <td><%= pro.productions.where("date BETWEEN ? AND ?",@beginning_of_week,@today).sum(:parameters) %></td>
+                    <td>
+                      <span class="badge badge-success badge-icon">
+                        <i class="fa fa-check" aria-hidden="true"></i>
+                        <span><%= pro.productions.where("date BETWEEN ? AND ?",@beginning_of_week,@today).sum(:value) %></span>
+                      </span>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -1,31 +1,395 @@
-
 <!DOCTYPE html>
 <html>
-<head>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Cybit : Bulk Chemicals Dashboard</title>
+  <head>
+    <meta charset="utf-8">
+   <!-- Always force latest IE rendering engine or request Chrome Frame -->
+   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+   <!-- Page Title -->
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DPLDashboard</title>
+    <meta name="description" content="Blue One Page Creative HTML5 Template">
+    <meta name="keywords" content="one page, single page, onepage, responsive, parallax, creative, business, html5, css3, css3 animation">
+    <meta name="author" content="Muhammad Morshed">
+    <!-- Mobile Specific Meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <script type="text/javascript">
 
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-  <meta charset="utf-8">
 
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-  <%= csrf_meta_tags %>
-</head>
-<body class="page-dashboard">
-<%= render :partial => "globals/header" %>
+            function startLoading()
+            {
 
-<div class="content-wrapper">
-  <!-- SIDEBAR STARTS -->
-<%= render partial: "globals/sidebar" %>
-  <!-- SIDEBAR ENDS -->
-  <%= yield %>
+                //$('#debtorsLoader').html("Hello");
+                //$('.mTitle').css('visibility', 'hidden');
+                $('#debtorsLoader').html("");
+                $('#debtorsLoader').append("<div id='progressBar'><div></div></div>");
+                progress(0, 100, $('#progressBar'));
+            }
+            function progress(timeleft, timetotal, $element) {
+                var progressBarWidth = timeleft * $element.width() / timetotal;
+                $element.find('div').animate({width: "100%"}, 2).html("<center><the >" + timeleft + " %</the></center>");
+                if (timeleft < 100) {
+                    setTimeout(function () {
+                        progress(timeleft + 1, timetotal, $element);
+                    }, Math.floor((Math.random() * 200) + 10));
+                } else
+                {
+                    $element.find('div').animate({width: progressBarWidth}, 2).html("<center><the>Please Wait...</the></center>");
+                }
+            }
+
+            function putdata(num)
+            {
+                if (num == -1)
+                {
+                    $('#progress_title').html('All Dashboard Loaded. Starting Application.');
+                } else
+                {
+                    $('#progress_title').html('Loading ' + num + '/4 Dashboards');
+
+                }
+            }
+
+            var i = 0;
+            function change() {
+                var doc = document.getElementById("background");
+                var color1 = ["#93CA52", "#5bca52", "#52ca78", "#52caae", "#52b8ca", "#52caae", "#52ca78", "#5bca52", "#93CA52", ];
+                var color2 = ["#52caae", "#52ca78", "#5bca52", "#93CA52", "#5bca52", "#52ca78", "#52caae", "#52b8ca", "#52caae", ];
+                $('.mTitle').css('background', '-webkit-linear-gradient(-135deg,' + color1[i] + ', ' + color2[i] + ')');
+                $('.mTitle').css('-webkit-background-clip', 'text');
+                $('.mTitle').css('-webkit-text-fill-color', 'transparent');
+                i = (i + 1) % color1.length;
+            }
+            setInterval(change, 100);
+
+
+        </script>
+  </head>
+  <div class="app app-default">
+  <body>
+    <%= render 'layouts/sidebar' %>
+    <%= render 'layouts/header' %>
+    <%= yield %>
+    <%= render 'layouts/footer' %>
+    <script>
+
+
+    //For Collapse Logic
+
+    var prop_col = false;
+    var benz_col = false;
+    var phenol_col = false;
+    var acetone_col = false;
+    var ams_col = false;
+    var other_col = false;
+
+    function collapse_all() {
+        prop_col = false;
+        benz_col = false;
+        phenol_col = false;
+        acetone_col = false;
+        ams_col = false;
+        other_col = false;
+        trigger_all();
+    }
+
+    function expand_all()
+    {
+        prop_col = true;
+        benz_col = true;
+        phenol_col = true;
+        acetone_col = true;
+        ams_col = true;
+        other_col = true;
+        trigger_all();
+    }
+
+    function trigger_all()
+    {
+        prop_fun();
+        benz_fun();
+        phenol_fun();
+        acetone_fun();
+        ams_fun();
+        other_fun();
+    }
+
+    collapse_all();
+
+    function prop_fun()
+    {
+        if (prop_col == false)
+        {
+            prop_col = true;
+            close_div("prop_header", "prop-tr", 1);
+        } else {
+            prop_col = false;
+            open_div("prop_header", "prop-tr", 3);
+        }
+    }
+
+    function benz_fun()
+    {
+        var header = "benz_header";
+        var tr = "benz_tr";
+        var rowspan = 3;
+        if (benz_col == false)
+        {
+            benz_col = true;
+            close_div(header, tr, 1);
+        } else {
+            benz_col = false;
+            open_div(header, tr, rowspan);
+        }
+    }
+
+    function phenol_fun()
+    {
+        var header = "phenol_header";
+        var tr = "phenol_tr";
+        var rowspan = 6;
+        if (phenol_col == false)
+        {
+            phenol_col = true;
+            close_div(header, tr, 1);
+        } else {
+            phenol_col = false;
+            open_div(header, tr, rowspan);
+        }
+    }
+
+    function acetone_fun()
+    {
+        var header = "acetone_header";
+        var tr = "acetone_tr";
+        var rowspan = 5;
+        if (acetone_col == false)
+        {
+            acetone_col = true;
+            close_div(header, tr, 1);
+        } else {
+            acetone_col = false;
+            open_div(header, tr, rowspan);
+        }
+    }
+
+    function ams_fun()
+    {
+        var header = "ams_header";
+        var tr = "ams_tr";
+        var rowspan = 4;
+        if (ams_col == false)
+        {
+            ams_col = true;
+            close_div(header, tr, 1);
+        } else {
+            ams_col = false;
+            open_div(header, tr, rowspan);
+        }
+    }
+
+    function other_fun()
+    {
+        var header = "other_header";
+        var tr = "other_tr";
+        var rowspan = 12;
+        if (other_col == false)
+        {
+            other_col = true;
+            close_div(header, tr, 1);
+        } else {
+            other_col = false;
+            open_div(header, tr, rowspan);
+        }
+    }
+
+    var plant_col = false;
+    plant_fun();
+
+    function plant_fun() {
+        var header = "plant_header";
+        var tr = "plant_tr";
+        var rowspan = 13;
+        if (plant_col == false)
+        {
+            plant_col = true;
+            close_div(header, tr, 1);
+            $('.plant_hide').fadeIn();
+        } else {
+            plant_col = false;
+            open_div(header, tr, rowspan);
+            $('.plant_hide').hide();
+        }
+    }
+
+    var si_prop_col = false;
+    si_prop_fun();
+    function si_prop_fun()
+    {
+        var header = "si_prop_header";
+        var tr = "si_prop_tr";
+        var rowspan = 8;
+        if (si_prop_col == false)
+        {
+            si_prop_col = true;
+            close_div(header, tr, 1);
+            $('.si_prop_hide').fadeIn();
+        } else {
+            si_prop_col = false;
+            open_div(header, tr, rowspan);
+            $('.si_prop_hide').hide();
+        }
+    }
+
+    var si_cumene_col = false;
+    si_cumene_fun();
+    function si_cumene_fun()
+    {
+        var header = "si_cumene_header";
+        var tr = "si_cumene_tr";
+        var rowspan = 7;
+        if (si_cumene_col == false)
+        {
+            si_cumene_col = true;
+            close_div(header, tr, 1);
+            $('.si_cumene_hide').fadeIn();
+        } else {
+            si_cumene_col = false;
+            open_div(header, tr, rowspan);
+            $('.si_cumene_hide').hide();
+        }
+    }
+
+    var si_benz_col = false;
+    si_benz_fun();
+    function si_benz_fun()
+    {
+        var header = "si_benz_header";
+        var tr = "si_benz_tr";
+        var rowspan = 8;
+        if (si_benz_col == false)
+        {
+            si_benz_col = true;
+            close_div(header, tr, 1);
+            $('.si_benz_hide').fadeIn();
+        } else {
+            si_benz_col = false;
+            open_div(header, tr, rowspan);
+            $('.si_benz_hide').hide();
+        }
+    }
+
+    var so_phenol_col = false;
+    so_phenol_fun();
+    function so_phenol_fun()
+    {
+        var header = "so_phenol_header";
+        var tr = "so_phenol_tr";
+        var rowspan = 37;
+        if (so_phenol_col == false)
+        {
+            so_phenol_col = true;
+            close_div(header, tr, 1);
+            $('.so_phenol_hide').fadeIn();
+        } else {
+            so_phenol_col = false;
+            open_div(header, tr, rowspan);
+            $('.so_phenol_hide').hide();
+        }
+    }
+    var so_acetone_col = false;
+    so_acetone_fun();
+    function so_acetone_fun()
+    {
+        var header = "so_acetone_header";
+        var tr = "so_acetone_tr";
+        var rowspan = 37;
+        if (so_acetone_col == false)
+        {
+            so_acetone_col = true;
+            close_div(header, tr, 1);
+            $('.so_acetone_hide').fadeIn();
+        } else {
+            so_acetone_col = false;
+            open_div(header, tr, rowspan);
+            $('.so_acetone_hide').hide();
+        }
+    }
+
+    var phenol_total = 2010.28;
+
+    $('#so_phenol_header').append("<br><br> <b>" + phenol_total + " MT</b>");
+
+    var acetone_total = 8202.641
+    $('#so_acetone_header').append("<br><br> <b>" + acetone_total + " MT</b>");
+
+
+
+
+
+    function open_div(header, tr, rowspan)
+    {
+        // $('#' + header).css('font-weight', '');
+        $('#' + header).css('font-style', '');
+        $('#' + header).attr('rowspan', rowspan);
+        $('#' + header).css('color', '#444');
+        $('.' + tr).fadeIn();
+    }
+
+    function close_div(header, tr, rowspan)
+    {
+        $('#' + header).css('font-weight', 'bold');
+        //$('#' + header).css('font-style', 'italic');
+        $('#' + header).attr('rowspan', 1);
+        $('#' + header).css('color', '#42b6f4');
+        $('.' + tr).hide();
+    }
+    // window.location.hash = '';
+    // window.location.hash = '#opening_inventory';
+    $("td:contains('N/A')").each(function () {
+        $(this).css('background', '#eee');
+        $(this).html(' ');
+    });
+    $("td").each(function () {
+        if ($.isNumeric($(this).html()))
+        {
+            $(this).css("text-align", "right");
+        }
+        // console.log($(this).html());
+        // console.log($.isNumeric($(this).html()));
+    });
+
+    //$('#splash_screen').fadeOut("show");
+    putdata(-1);
+    $('[data-toggle="tooltip"]').tooltip();
+
+    //Do Everything Before here
+    $('#splash_screen').slideUp(1500);
+    if ("live" == "live")
+    {
+        $('#set_mode').html("<me class='btn' style='background:red;color:white;padding:2px;box-shadow:none;'>LIVE</me>");
+    } else
+    {
+        $('#set_mode').html("08-12-2018 - 14-12-2018");
+            }
+
+            function submitIt() {
+                if ($('select[name="month"]').val() == 2 && $('select[name="week"]').val() == 5)
+                {
+                    alert('Not A Valid Timeframe');
+                } else
+                {
+                    $('#myForm').submit();
+                }
+            }
+
+
+
+</script>
+  </body>
 </div>
-
-
-<%= javascript_include_tag 'footer', 'data-turbolinks-track' => true %>
-<div class="footer">&copy; Copyright 2017 <span class="divider">|</span> <span class="hidden-xs">Dashboard by Deepak Cybit Pvt Ltd</span> <span class="divider hidden-xs">|</span> All rights reserved.</div>
-</body>
 </html>

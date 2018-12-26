@@ -1,0 +1,57 @@
+<div class="app-container">
+  <div id="splash_screen" style="z-index: 999999; background: white; position: fixed; top: 0px; right: 0px; width: 100%; height: 50%; vertical-align: middle; align-content: center; display: none;">
+    <center>
+      <br><br><br><br><br><br>
+      <%= image_tag 'Deepak-Logo.png' %><br>
+      <h3>Welcome to
+        <font class="mTitle" style="background: -webkit-linear-gradient(-135deg, rgb(82, 202, 174), rgb(147, 202, 82)) text; -webkit-text-fill-color: transparent;">DPL Dashboard</font>
+      </h3>
+
+      <!--h3 id='debtorsLoader'-->
+
+      <me style="font-weight: bold;" id="progress_title">All Dashboard Loaded. Starting Application.</me>
+    </center>
+  </div>
+  <nav class="navbar navbar-default" id="navbar">
+    <div class="container-fluid">
+      <div class="navbar-collapse collapse in">
+        <ul class="nav navbar-nav navbar-left">
+          <li>
+            <%= image_tag 'Deepak-Logo.png', class: 'logo_height' %>
+            <span class="title logo_text">Responsive
+              <br>Chemistry</span>
+          </li>
+        </ul>
+        <ul class="nav col-md-6" style="padding-top: 25px; padding-right: 250px; ">
+          <center>
+            <span>
+            Timeframe :
+            <%= link_to "LIVE", root_path, class: 'btn', style: "background:red;color:white;padding:2px;box-shadow:none;",method: :get %>
+          </span>
+          </center>
+        </ul>
+        <div class="col-md-2 nav navbar-nav navbar-right"  style="height: 90px; padding-top: 20px;">
+          <a class="card-green-light">
+            <%= form_tag '', method: 'get' do %>
+            <%= select_tag "track_mode", options_for_select([ "Monthly", "Querterly","Yearly" ]), class: 'form-control', :onchange=> "this.form.submit()" %>
+            <h6>Choose a Timeframe or Go Live</h6>
+            <%= text_field_tag(:date, value = @today, html_options = {class: 'form-control datepicker' , placeholder: 'Select Date', :onchange=> "this.form.submit()"}) %>
+            <% end %>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+<script type="text/javascript">
+    var $input = $( '.datepicker' ).pickadate({
+      labelMonthNext: 'Go to the next month',
+      labelMonthPrev: 'Go to the previous month',
+      labelMonthSelect: 'Pick a month from the dropdown',
+      labelYearSelect: 'Pick a year from the dropdown',
+      selectMonths: true,
+      selectYears: true
+
+    })
+
+</script>

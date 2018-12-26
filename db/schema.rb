@@ -72,17 +72,16 @@ ActiveRecord::Schema.define(version: 2018_12_11_070735) do
   create_table "products", force: :cascade do |t|
     t.string "name"
     t.string "product_type"
+    t.integer "product_num"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "sales_outbounds", force: :cascade do |t|
     t.integer "product_id"
+    t.date "date"
     t.string "region"
-    t.string "purity"
-    t.string "packing"
-    t.string "date"
-    t.float "value"
+    t.float "metric_tons"
     t.integer "total_tons"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -100,6 +99,9 @@ ActiveRecord::Schema.define(version: 2018_12_11_070735) do
   create_table "tanks", force: :cascade do |t|
     t.integer "product_id"
     t.string "name"
+    t.string "tank_no"
+    t.float "tank_capacity"
+    t.string "tag_no_mt_value"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

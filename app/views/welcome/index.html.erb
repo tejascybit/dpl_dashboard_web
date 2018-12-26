@@ -1,0 +1,132 @@
+<div class="row page_id" id="page_id">
+  <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+    <a class="card card-banner card-green-light">
+      <div class="card-body ">
+        <p class="col-md-6"><%= @beginning_of_week %>
+        </p>
+        <i class="icon fa fa-shopping-basket"></i>
+        <div class="content col-md-6">
+          <div class="title">Sales</div>
+          <div class="value">
+            <%= @total_sale %>
+          </div>
+
+        </div>
+
+        <div class="col-md-12">
+          <table class="table">
+            <% @pro_name.each do |pro| %>
+              <% select_sales_pro.each do |selected| %>
+                <tr>
+                  <div class="col-md-6">
+                    <% if pro.name == selected %>
+                      <td class="tr_font_height"><%= pro.name %></td>
+                      <td class="tr_font_height"><%= pro.sales_outbounds.where(date: params[:date]).sum(:metric_tons) %></td>
+                    <% end %>
+                  </div>
+                </tr>
+              <% end %>
+            <% end %>
+          </table>
+          <div class="col-md-6"></div>
+        </div>
+
+      </div>
+    </a>
+  </div>
+
+  <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+    <a class="card card-banner card-blue-light">
+      <div class="card-body">
+        <p><%= @beginning_of_week %>
+        </p>
+        <i class="icon fa fa-industry"></i>
+        <div class="content">
+          <div class="title">PRODUCTION</div>
+          <% @pro_name.each do |pro| %>
+            <% if pro.name == "Phenol" %>
+              <div class="value">
+                <%= pro.productions.where("date BETWEEN ? AND ?",@beginning_of_week,@today).sum(:value) %>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+      <hr>
+      <div class="progress col-offset-1">
+        <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 30%">
+          <span>30% Production</span>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+    <a class="card card-banner card-orange-light">
+      <div class="card-body col-md-12">
+        <div class="col-md-12">
+          <p><%= @beginning_of_week %></p>
+        </div>
+        <div class=" col-md-12">
+          <div class="card-body col-md-6">
+            <i class="icon fa fa-line-chart"></i>
+          </div>
+          <div class="col-md-6">
+            <div class="title">INVENTORY</div>
+            <% @pro_name.each do |pro| %>
+              <% if pro.name == "Phenol" %>
+                <div class="tr_font_height1">
+                  <%= pro.inventories.where(date: params[:date]).sum(:value) %>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <table class="table">
+            <% @pro_name.each do |pro| %>
+              <% select_pro.each do |selected| %>
+                <tr>
+                  <div class="col-md-6">
+                    <% if pro.name == selected %>
+                      <td class="tr_font_height"><%= pro.name %></td>
+                      <td class="tr_font_height"><%= pro.inventories.where(date: params[:date]).sum(:value) %></td>
+                    <% end %>
+                  </div>
+                </tr>
+              <% end %>
+            <% end %>
+          </table>
+          <div class="col-md-6"></div>
+        </div>
+
+      </div>
+    </a>
+  </div>
+
+  <div class="col-lg-3 col-mddefault-6 col-sm-6 col-xs-12">
+    <a class="card card-banner card-yellow-light">
+      <div class="card-body">
+        <p><%= @beginning_of_week %>
+        </p>
+        <i class="icon fa fa-truck"></i>
+        <div class="content col-md-6">
+          <div class="title">INBOUND</div>
+          <div class="value">50</div>
+        </div>
+
+      </div>
+      <hr>
+      <div class=""></div>
+    </a>
+  </div>
+</div>
+<div id="detail">
+</div>
+<%= render partial: "welcome/sales_data_product_wise" %>
+<%= render partial: "welcome/production_data_product_wise" %>
+<%= render partial: "welcome/all_inventory" %>
+
+
+    </div>
+  </div>

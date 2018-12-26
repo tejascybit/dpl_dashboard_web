@@ -23,23 +23,23 @@ default: &default
 
 development:
   <<: *default
+  #
+  # adapter: postgresql
+  # encoding: unicode
+  # host: ec2-54-235-133-42.compute-1.amazonaws.com
+  # database: d8sic2v1mvkug4
+  # username: uaxnxirszrwnza
+  # port: 5432
+  # password: 676cf1e2f9b0c61331296b8ebcffdca5e840dc22500a427760843efce747dc35
+
 
   adapter: postgresql
   encoding: unicode
-  host: ec2-54-235-133-42.compute-1.amazonaws.com
-  database: d8sic2v1mvkug4
-  username: uaxnxirszrwnza
+  host: localhost
+  database: DPLDashboard_development
+  username: postgres
   port: 5432
-  password: 676cf1e2f9b0c61331296b8ebcffdca5e840dc22500a427760843efce747dc35
-
-  # 
-  # adapter: postgresql
-  # encoding: unicode
-  # host: localhost
-  # database: DPLDashboard_development
-  # username: postgres
-  # port: 5432
-  # password: postgres
+  password: postgres
 
 
   # The specified database role being used to connect to postgres.
