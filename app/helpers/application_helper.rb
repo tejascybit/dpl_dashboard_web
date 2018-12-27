@@ -33,11 +33,17 @@ module ApplicationHelper
 
   def days_in_month(month = Date.today.month, year = Time.now.year)
     date_range = (Date.today.at_beginning_of_month..Date.today.at_end_of_month).map.each { |day| day.strftime('%d-%m-%Y') }
+    week = []
+      days_in_month.each_slice(7) do |day|
+        week << day
+        @week_num = week
+      end
   end
 
-  def month
-    (Date.today.at_beginning_of_month..Date.today.at_end_of_month).each_with_object([]) do |date,month_array|
+  def weeks
+     array = (Date.today.at_beginning_of_month..Date.today.at_end_of_month).each_with_object([]) do |date,month_array|
       month_array << date.strftime("%d-%m-%Y")
+
     end.uniq
   end
 end
