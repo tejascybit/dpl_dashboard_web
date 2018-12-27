@@ -5,6 +5,7 @@ Rails.application.routes.draw do
 
   get 'welcome/production_data_product_wise'
   get 'welcome/getting_production_data'
+  get 'welcome/getting_inbound_data'
   get 'welcome/getting_inventory_data'
   get 'welcome/getting_sales_data'
   get 'welcome/getting_api_data'

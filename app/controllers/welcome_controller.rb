@@ -2,7 +2,7 @@ require 'httparty'
 require 'pp'
 class WelcomeController < ApplicationController
   before_action :get_products, only: %i[index production_data_product_wise all_inventory]
-  before_action :get_params_date, only: %i[index production_data_product_wise getting_api_data all_inventory]
+  before_action :get_params_date, only: %i[index production_data_product_wise getting_api_data all_inventory getting_sales_data]
   include ApplicationHelper
   MT = 10000
   def index
@@ -49,40 +49,41 @@ class WelcomeController < ApplicationController
     token = generate_new_token
     token = token['key']
     check_token_limit(token)
-    start_date = '22-12-2018'
-    end_date = '24-12-2018'
+    get_current_week_days_range.each do |date|
+      start_date = date
+      end_date = Date.today.end_of_week
+          Tank.all.each do |tank|
+            check_token_limit(token)
+            puts token
+            if check_token_limit(token).nil? || !((check_token_limit(token).empty?) && (check_token_limit(token) < 100))
+              token = generate_new_token
+              token = token['key']
+              puts token
+            end
+            u = 'https://dnlapps.dnlpune.com/DPLPlan/OpeningInventory?tankNumber=' + tank.tank_no + '&startDate=' + start_date.to_s + '&endDate=' + end_date.to_s + '&accessCode=' + token
+            url = u
+            puts url
+            response = HTTParty.get(url)
+            @data = JSON.parse(response)
 
-    Tank.all.each do |tank|
-      check_token_limit(token)
-      puts token
-      if check_token_limit(token).nil? || !((check_token_limit(token).empty?) && (check_token_limit(token) < 100))
-        token = generate_new_token
-        token = token['key']
-        puts token
-      end
-      u = 'https://dnlapps.dnlpune.com/DPLPlan/OpeningInventory?tankNumber=' + tank.tank_no + '&startDate=' + start_date + '&endDate=' + end_date + '&accessCode=' + token
-      url = u
-      puts url
-      response = HTTParty.get(url)
-      @data = JSON.parse(response)
+            @data['data'].keys.each do |key|
+              next unless key =~ /day/i
 
-      @data['data'].keys.each do |key|
-        next unless key =~ /day/i
-
-        date = @data['data'][key]['date']
-        date = date.to_date
-        inventory = Inventory.where('date =? and tank_id =?', date, tank.id).first
-        if inventory.blank?
-          inventory = Inventory.new
-          inventory.tank_id = tank.id
-          inventory.date = date
+              date = @data['data'][key]['date']
+              date = date.to_date
+              inventory = Inventory.where('date =? and tank_id =?', date, tank.id).first
+              if inventory.blank?
+                inventory = Inventory.new
+                inventory.tank_id = tank.id
+                inventory.date = date
+              end
+              inventory.product_id = tank.product_id
+              inventory.tank_level = @data['data']['tankLevel']
+              inventory.value = @data['data'][key]['value']
+              inventory.save
+            end
+          end
         end
-        inventory.product_id = tank.product_id
-        inventory.tank_level = @data['data']['tankLevel']
-        inventory.value = @data['data'][key]['value']
-        inventory.save
-      end
-    end
   end
 
   def all_inventory
@@ -114,12 +115,11 @@ class WelcomeController < ApplicationController
 
 
   def getting_sales_data
-    @today = Date.today
     require 'json'
     token = generate_new_token
     token = token['key']
     check_token_limit(token)
-    get_current_week_days.each do |date|
+    get_current_week_days_range.each do |date|
       start_date = date
       end_date = Date.today.end_of_week
         get_product_zone.each do |pzone|
@@ -198,7 +198,9 @@ class WelcomeController < ApplicationController
     end
   end
 
+  def getting_inbound_data
 
+  end
 
   def production_data_product_wise
     @beginning_of_week = @today.beginning_of_week
