@@ -24,26 +24,11 @@ module ApplicationHelper
     zone = ["North","East","West","South","Central","Export"]
   end
 
+  def get_day_1
+    date_range = Date.today.at_beginning_of_month.strftime('%A').to_sym.downcase
+  end
   def get_current_week_days_range
-    @dynamic_date = (Date.today.beginning_of_week(start_day = :saturday)..Date.today.end_of_week(start_day = :saturday)).map.each { |day| day.strftime('%d-%m-%Y') }
-  end
-  def get_current_month
-    date_range = (Date.today.at_beginning_of_month..Date.today.at_end_of_month).map.each { |day| day.strftime('%d-%m-%Y') }
+    @dynamic_date = (Date.today.beginning_of_week(start_day = get_day_1)..Date.today.end_of_week(start_day = get_day_1)).map.each { |day| day.strftime('%d-%m-%Y') }
   end
 
-  def days_in_month(month = Date.today.month, year = Time.now.year)
-    date_range = (Date.today.at_beginning_of_month..Date.today.at_end_of_month).map.each { |day| day.strftime('%d-%m-%Y') }
-    week = []
-      days_in_month.each_slice(7) do |day|
-        week << day
-        @week_num = week
-      end
-  end
-
-  def weeks
-     array = (Date.today.at_beginning_of_month..Date.today.at_end_of_month).each_with_object([]) do |date,month_array|
-      month_array << date.strftime("%d-%m-%Y")
-
-    end.uniq
-  end
 end
