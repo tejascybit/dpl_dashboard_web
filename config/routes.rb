@@ -17,6 +17,7 @@ Rails.application.routes.draw do
   namespace :api, defaults: { format: :json } do
     namespace :v1 do
       resources :data_getter
+      get 'homedata' => 'data_getter#homedata'
       get 'open_stock' => 'data_getter#open_stock'
       get 'index' => 'data_getter#index'
       get 'stock' => 'data_getter#get_stock_data_product_wise'
