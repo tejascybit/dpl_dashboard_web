@@ -47,7 +47,7 @@ gem "font-awesome-rails"
 gem "twitter-bootstrap-rails"
 gem 'pry'
 group :development, :test do
-  gem 'sqlite3'
+  #gem 'sqlite3'
   gem 'pry'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
