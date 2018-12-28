@@ -19,6 +19,9 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :data_getter
       get 'homedata' => 'data_getter#homedata'
+      get 'inventory' => 'data_getter#inventory'
+      get 'production' => 'data_getter#production'
+      get 'sales' => 'data_getter#sales'
       get 'open_stock' => 'data_getter#open_stock'
       get 'index' => 'data_getter#index'
       get 'stock' => 'data_getter#get_stock_data_product_wise'
