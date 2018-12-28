@@ -51,7 +51,7 @@ class WelcomeController < ApplicationController
     check_token_limit(token)
     get_current_week_days_range.each do |date|
       start_date = date
-      end_date = Date.today.end_of_week
+      end_date = Date.today.end_of_week(start_day = get_day_1)
       Tank.all.each do |tank|
         check_token_limit(token)
         puts token
@@ -70,7 +70,7 @@ class WelcomeController < ApplicationController
           next unless key =~ /day/i
 
           date = @data['data'][key]['date']
-          date = date.to_date
+          date = date.to_date if date.present?
           inventory = Inventory.where('date =? and tank_id =?', date, tank.id).first
           if inventory.blank?
             inventory = Inventory.new

@@ -1,0 +1,29 @@
+TANK_NO,TANK_DESCRIPTION,TAG_NO_MT_VALUE,TYPE,PRODUCT,TANK_CAPACITY,PRODUCT_NUM
+01-T-2325A,Acetone Rundown tank,DMU_01_LI23251A_MT_CAL,Product,Acetone,218.9206,28200100
+01-T-2325B,Acetone Rundown tank,DMU_01_LI23254A_MT_CAL,Product,Acetone,218.63,28200100
+01-T-2395A,Phenol Rundown tank,DMU_01_LI23951AA_MT_CAL,Product,Phenol,379.56,28100100
+01-T-2395B,Phenol Rundown tank,DMU_01_LI23951BA_MT_CAL,Product,Phenol,379.55,28100100
+01-T-2396,Hydrated Phenol Rundown tank,DMU_01_LI23961A_MT_CAL,Product,Hydrated Phenol,420.29,28100101
+01-T-2475A,AMS Rundown tank,DMU_01_LI24750A_MT_CAL,Product,AMS,16.72034,
+01-T-2475B,AMS Rundown tank,DMU_01_LI24756A_MT_CAL,Product,AMS,16.71,
+10-T-1501,48% caustic storage tank,DMU_10_LI15011_MT_CAL,Raw material,48% Caustic,162.107,
+10-T-1502,30% caustic dilution,DMU_10_LI15021_MT_CAL,Raw material,30% Caustic,18.214,
+10-T-1503,98% H2SO4,DMU_10_LI15031_MT_CAL,Raw material,98% H2SO4,84.61976,
+10-T-1504,30% HCL,DMU_10_LI15005_MT_CAL,Raw material,30% HCL,25.04,
+10-T-3101,Product phenol,DMU_10_LI31002A_MT_CAL,Product,Phenol,3678.0718,28100100
+10-T-3102,Hydrated phenol,DMU_10_LI31004A_MT_CAL,Product,Hydrated Phenol,3675.9224,28100101
+10-T-3103A,acetone,DMU_10_LI31006A_MT_CAL,Product,Acetone,1939.967,28200100
+10-T-3103B,acetone,DMU_10_LI31009A_MT_CAL,Product,Acetone,1944.299,28200100
+10-T-3104,Cumene,DMU_10_LI31013A_MT_CAL,Product/Raw material,Cumene,4750.383,
+10-T-3105A,benzene,DMU_10_LI31033A_MT_CAL,Raw material,Benzene,2892.603,
+10-T-3105B,benzene,DMU_10_LI31036A_MT_CAL,Raw material,Benzene,2975.69,
+10-T-3106,AMS,DMU_10_LI31015A_MT_CAL,Product,AMS,164.6363,
+10-T-3107,Heavies,DMU_10_LI31074A_MT_CAL,Byproduct,Heavies,368.95,48200300
+10-T-5101A,propylene Bullet,DMU_10_LI51011_MT_CAL,Raw material,Propylene ,2311.98,
+10-T-5101B,propylene Bullet,DMU_10_LI51014_MT_CAL,Raw material,Propylene ,2311.265,
+10-T-5105,propane Bullet,DMU_10_LI51052A_MT_CAL,Byproduct,Propane,1362.22,
+10-T-5109,PIPB Drag,DMU_10_LI51092A_MT_CAL,Byproduct,PIPB drag,18.738,
+10-V-5110,Benzene drag,DMU_10_LI51101A_MT_CAL,Byproduct,Benzene drag,32.38,48400101
+10-V-3109,Acetone purge,DMU_10_LI31037_MT_CAL,Byproduct,Acetone purge,6.9661,
+10-V-3108,Light Hydrocarbon Purge,DMU_10_LI31030_MT_CAL,Byproduct,Light hydrocarbon purge,3.8733,48200200
+T-1,Liquid nitrogen tank,DMU_10_LI21021_MT_CAL,Raw material,Liq N2,22.74,
