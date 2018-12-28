@@ -27,7 +27,7 @@ class Api::V1::DataGetterController < ApplicationController
 	  sales_phenol = 	SalesOutbound.where(date:sales_start..sales_end,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:metric_tons).round(2)
 		sales_acetone = 	SalesOutbound.where(date:sales_start..sales_end,product:Product.where(name:'Acetone')).sum(:metric_tons).round(2)
 		
-		render json:{data: {'inventory_phenol': inventory_phenol,'inventory_benzene': inventory_benzene,'inventory_acetone':inventory_acetone,'inventory_propylene':inventory_propylene,'inventory_cumene':inventory_cumene,'sales_phenol':sales_phenol,'sales_acetone':sales_acetone,'production_last_update':Date.today.to_s(:long),'sales_last_update':Date.today.to_s(:long),'production_phenol_total':1000,'production_phenol_plan':1000,'production_cumene_total':1000,'production_cumene_plan':1000,'production_per':10,'production_progress':'warning','inbound_benzene_mt_tt':'1000 MT [9 tt]','inbound_prpylene_mt_tt':'1000 MT [9 tt]','inbound_cumene_mt_tt':'1000 MT [9 tt]','inbound_coal_mt_tt':'1000 MT [9 tt]'}, success: true,message:""}
+		render json:{data: {'inventory_phenol': inventory_phenol,'inventory_benzene': inventory_benzene,'inventory_acetone':inventory_acetone,'inventory_propylene':inventory_propylene,'inventory_cumene':inventory_cumene,'sales_phenol':sales_phenol,'sales_acetone':sales_acetone,'production_last_update':Date.today.to_s(:long),'sales_last_update':Date.today.to_s(:long),'production_phenol_total':2588.54,'production_phenol_plan':5904.0,'production_cumene_total':3296.9282,'production_cumene_plan':7488.0,'production_per':43.94,'production_progress':'warning','inbound_benzene_mt_tt':'1935.52 MT [87 TT]','inbound_prpylene_mt_tt':'1659.52 MT [104 TT]','inbound_cumene_mt_tt':'00 MT [0 TT]','inbound_coal_mt_tt':'1927.2301 MT [72 TT]'}, success: true,message:""}
 
 	end
 	def inventory
@@ -44,9 +44,12 @@ class Api::V1::DataGetterController < ApplicationController
 		end
 
 		sales_end = sales_start + 7.days
-		
-		render json:{data: {'overall':[{'name':'Phenol',"qty":100},{'name':'Acetone',"qty":100},{'name':'Propylene',"qty":100},{'name':'Cumene',"qty":100}],'tankwise':[{'name':'Phenole Rundown tank 1',"qty":100,'level':10},{'name':'Phenole Rundown tank 2',"qty":100,'level':10},{'name':'Hydrated Phenol Rundown tank',"qty":100,'level':10}]}, success: true,message:""}
-		
+		inventory_phenol= Inventory.where(date:Date.today,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
+		# inventory_benzene= Inventory.where(date:Date.today,product:Product.where(name:'Benzene')).sum(:value).round(2)
+		inventory_acetone= Inventory.where(date:Date.today,product:Product.where(name:'Acetone')).sum(:value).round(2)
+		inventory_propylene= Inventory.where(date:Date.today,product:Product.where(name:'Propylene')).sum(:value).round(2)
+		inventory_cumene= Inventory.where(date:Date.today,product:Product.where(name:'Cumene')).sum(:value).round(2)
+		render json:{data: {'overall':[{'name':'Phenol',"qty":inventory_phenol},{'name':'Acetone',"qty":inventory_acetone},{'name':'Propylene',"qty":inventory_propylene},{'name':'Cumene',"qty":inventory_cumene}],'tankwise':[{'name':'Phenole Rundown tank 1',"qty":251.862,'level':68.32},{'name':'Phenole Rundown tank 2',"qty":171.091,'level':46.23},{'name':'Hydrated Phenol Rundown tank',"qty":334.986,'level':82.07}]}, success: true,message:""}
 	end
 	def production
 		sales_start = Date.today
