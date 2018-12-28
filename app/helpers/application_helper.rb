@@ -31,7 +31,4 @@ module ApplicationHelper
     @dynamic_date = (Date.today.beginning_of_week(start_day = get_day_1)..Date.today.end_of_week(start_day = get_day_1)).map.each { |day| day.strftime('%d-%m-%Y') }
   end
 
-    def get_test
-      date_range = Date.today.at_beginning_of_month.strftime('%A').to_sym.downcase
-    end
 end
