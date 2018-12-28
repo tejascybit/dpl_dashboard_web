@@ -28,6 +28,61 @@ class Api::V1::DataGetterController < ApplicationController
 		sales_acetone = 	SalesOutbound.where(date:sales_start..sales_end,product:Product.where(name:'Acetone')).sum(:metric_tons).round(2)
 		
 		render json:{data: {'inventory_phenol': inventory_phenol,'inventory_benzene': inventory_benzene,'inventory_acetone':inventory_acetone,'inventory_propylene':inventory_propylene,'inventory_cumene':inventory_cumene,'sales_phenol':sales_phenol,'sales_acetone':sales_acetone,'production_last_update':Date.today.to_s(:long),'sales_last_update':Date.today.to_s(:long),'production_phenol_total':1000,'production_phenol_plan':1000,'production_cumene_total':1000,'production_cumene_plan':1000,'production_per':10,'production_progress':'warning','inbound_benzene_mt_tt':'1000 MT [9 tt]','inbound_prpylene_mt_tt':'1000 MT [9 tt]','inbound_cumene_mt_tt':'1000 MT [9 tt]','inbound_coal_mt_tt':'1000 MT [9 tt]'}, success: true,message:""}
+
+	end
+	def inventory
+		sales_start = Date.today
+		today = Date.today
+		if today.day<8
+			sales_start = Date.new(today.year,today.month,1)
+		elsif today.day%7 == 0
+			sales_start = 6.days.ago
+		else	
+			a = []
+			(1..today.day).each{|x| if x%7 == 0 then a.push(x) end}
+			sales_start = Date.new(today.year,today.month,(a.last+1))
+		end
+
+		sales_end = sales_start + 7.days
+		
+		render json:{data: {'overall':[{'name':'Phenol',"qty":100},{'name':'Acetone',"qty":100},{'name':'Propylene',"qty":100},{'name':'Cumene',"qty":100}],'tankwise':[{'name':'Phenole Rundown tank 1',"qty":100,'level':10},{'name':'Phenole Rundown tank 2',"qty":100,'level':10},{'name':'Hydrated Phenol Rundown tank',"qty":100,'level':10}]}, success: true,message:""}
+		
+	end
+	def production
+		sales_start = Date.today
+		today = Date.today
+		if today.day<8
+			sales_start = Date.new(today.year,today.month,1)
+		elsif today.day%7 == 0
+			sales_start = 6.days.ago
+		else	
+			a = []
+			(1..today.day).each{|x| if x%7 == 0 then a.push(x) end}
+			sales_start = Date.new(today.year,today.month,(a.last+1))
+		end
+
+		sales_end = sales_start + 7.days
+		
+		render json:{data: {'plant':[{'name':'Phenol',"qty":100,'operating_rate':10,'downtime_hours':0.00,'onstream_hours':168.00},{'name':'Cumene',"qty":100,'operating_rate':10,'downtime_hours':0.00,'onstream_hours':168.00}],'other':[{'name':'Acetone',"qty":100},{'name':'Propylene',"qty":100},{'name':'AWS',"qty":100}]}, success: true,message:""}
+		
+	end
+	def sales
+		sales_start = Date.today
+		today = Date.today
+		if today.day<8
+			sales_start = Date.new(today.year,today.month,1)
+		elsif today.day%7 == 0
+			sales_start = 6.days.ago
+		else	
+			a = []
+			(1..today.day).each{|x| if x%7 == 0 then a.push(x) end}
+			sales_start = Date.new(today.year,today.month,(a.last+1))
+		end
+
+		sales_end = sales_start + 7.days
+		
+		render json:{data: {'zone':[{'name':'Phenol',"qty":100,'north_qty':10,'west_qty':0.00,'south_qty':168.00,'east_qty':100.00,'central_qty':100,'export_qty':100},{'name':'Acetone',"qty":100,'north_qty':10,'west_qty':0.00,'south_qty':168.00,'east_qty':100.00,'central_qty':100,'export_qty':100}],'other':[{'name':'Heavies',"qty":100}]}, success: true,message:""}
+		
 	end
 	def index
     @response = HTTParty.get("http://172.16.16.96:8081/DPLPlan/OpeningInventory?tankNumber=10-T-5101A&startDate=01-12-2018&endDate=07-12-2018&accessCode=CYBITTEST").parsed_response
