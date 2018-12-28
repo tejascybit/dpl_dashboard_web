@@ -50,7 +50,7 @@ namespace :importdata do
     end_date = '28-12-2018'
     
     ["North","East","West","South","Central","Export"].each do |pzone|
-          Product.where("product_num >0").each do |product|
+          Product.where("product_num != '0'").each do |product|
             token= AccessCode.last.get_access_code
             u ='https://dnlapps.dnlpune.com/DPLPlan/SalesOutbound?product=' + product.product_num.to_s + '&zone='+ pzone + '&startDate=' + start_date.to_s + '&endDate=' + end_date.to_s + '&accessCode=' + token
             response = HTTParty.get(u)
@@ -74,8 +74,7 @@ namespace :importdata do
             end
           end
         end
-    
-  end
+     end
 
   desc "TODO"
   task get_inbound: :environment do
