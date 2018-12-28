@@ -27,7 +27,7 @@ class Api::V1::DataGetterController < ApplicationController
 	  sales_phenol = 	SalesOutbound.where(date:sales_start..sales_end,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:metric_tons).round(2)
 		sales_acetone = 	SalesOutbound.where(date:sales_start..sales_end,product:Product.where(name:'Acetone')).sum(:metric_tons).round(2)
 		
-		render json: {data: {'inventory_phenol': inventory_phenol,'inventory_benzene': inventory_benzene,'inventory_acetone':inventory_acetone,'inventory_propylene':inventory_propylene,'inventory_cumene':inventory_cumene,'sales_phenol':sales_phenol,'sales_acetone':sales_acetone}, success: true,message:""}
+		render json: {data: {'inventory_phenol': inventory_phenol,'inventory_benzene': inventory_benzene,'inventory_acetone':inventory_acetone,'inventory_propylene':inventory_propylene,'inventory_cumene':inventory_cumene,'sales_phenol':sales_phenol,'sales_acetone':sales_acetone,'production_last_update':Date.today.to_s(:long)}, success: true,message:""}
 	end
 	def index
     @response = HTTParty.get("http://172.16.16.96:8081/DPLPlan/OpeningInventory?tankNumber=10-T-5101A&startDate=01-12-2018&endDate=07-12-2018&accessCode=CYBITTEST").parsed_response
