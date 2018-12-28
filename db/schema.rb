@@ -73,7 +73,7 @@ ActiveRecord::Schema.define(version: 2018_12_11_070735) do
     t.string "name"
     t.string "product_type"
     t.string "product_num"
-    t.string "product_capacity"
+    t.integer "product_capacity"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
