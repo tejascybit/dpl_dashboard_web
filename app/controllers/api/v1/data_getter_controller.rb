@@ -66,7 +66,7 @@ class Api::V1::DataGetterController < ApplicationController
 
 		sales_end = sales_start + 7.days
 		
-		render json:{data: {'plant':[{'name':'Phenol',"qty":100,'operating_rate':10,'downtime_hours':0.00,'onstream_hours':168.00},{'name':'Cumene',"qty":100,'operating_rate':10,'downtime_hours':0.00,'onstream_hours':168.00}],'other':[{'name':'Acetone',"qty":100},{'name':'Propylene',"qty":100},{'name':'AWS',"qty":100}]}, success: true,message:""}
+		render json:{data: {'plant':[{'name':'Phenol',"qty":2588.54,'operating_rate':88.21,'downtime_hours':0.00,'onstream_hours':168.00},{'name':'Cumene',"qty":3296.9282,'operating_rate':0.00,'downtime_hours':0.00,'onstream_hours':0.00}],'other':[{'name':'Acetone',"qty":1557.98},{'name':'Benzene Drag',"qty":3077.73},{'name':'AWS',"qty":140.40}]}, success: true,message:""}
 		
 	end
 	def sales
