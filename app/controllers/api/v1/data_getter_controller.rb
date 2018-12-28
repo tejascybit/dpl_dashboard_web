@@ -83,8 +83,9 @@ class Api::V1::DataGetterController < ApplicationController
 		end
 
 		sales_end = sales_start + 7.days
-		
-		render json:{data: {'zone':[{'name':'Phenol',"qty":100,'north_qty':10,'west_qty':0.00,'south_qty':168.00,'east_qty':100.00,'central_qty':100,'export_qty':100},{'name':'Acetone',"qty":100,'north_qty':10,'west_qty':0.00,'south_qty':168.00,'east_qty':100.00,'central_qty':100,'export_qty':100}],'other':[{'name':'Heavies',"qty":100}]}, success: true,message:""}
+		sales_phenol = 	SalesOutbound.where(date:sales_start..sales_end,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:metric_tons).round(2)
+		sales_acetone = 	SalesOutbound.where(date:sales_start..sales_end,product:Product.where(name:'Acetone')).sum(:metric_tons).round(2)
+		render json:{data: {'zone':[{'name':'Phenol',"qty":sales_phenol,'north_qty':497.34,'west_qty':777.14,'south_qty':0.00,'east_qty':196.14,'central_qty':3000.05,'export_qty':0.00},{'name':'Acetone',"qty":sales_acetone,'north_qty':358.6,'west_qty':974.60,'south_qty':1249.8,'east_qty':00.00,'central_qty':3232.22,'export_qty':0.00}],'other':[{'name':'Heavies',"qty":0.00}]}, success: true,message:""}
 		
 	end
 	def index
