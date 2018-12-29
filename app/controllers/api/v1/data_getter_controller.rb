@@ -5,8 +5,9 @@ class Api::V1::DataGetterController < ApplicationController
 	MT=10000
 
 	def homedata
-		sales_start = Date.today
-		today = Date.today
+		aday = 1.day.ago
+		sales_start = 1.day.ago
+		today = 1.day.ago
 		if today.day<8
 			sales_start = Date.new(today.year,today.month,1)
 		elsif today.day%7 == 0
@@ -19,11 +20,11 @@ class Api::V1::DataGetterController < ApplicationController
 
 		sales_end = sales_start + 7.days
 
-		inventory_phenol= Inventory.where(date:Date.today,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
-		inventory_benzene= Inventory.where(date:Date.today,product:Product.where(name:'Benzene')).sum(:value).round(2)
-		inventory_acetone= Inventory.where(date:Date.today,product:Product.where(name:'Acetone')).sum(:value).round(2)
-		inventory_propylene= Inventory.where(date:Date.today,product:Product.where(name:'Propylene')).sum(:value).round(2)
-		inventory_cumene= Inventory.where(date:Date.today,product:Product.where(name:'Cumene')).sum(:value).round(2)
+		inventory_phenol= Inventory.where(date:aday,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
+		inventory_benzene= Inventory.where(date:aday,product:Product.where(name:'Benzene')).sum(:value).round(2)
+		inventory_acetone= Inventory.where(date:aday,product:Product.where(name:'Acetone')).sum(:value).round(2)
+		inventory_propylene= Inventory.where(date:aday,product:Product.where(name:'Propylene')).sum(:value).round(2)
+		inventory_cumene= Inventory.where(date:aday,product:Product.where(name:'Cumene')).sum(:value).round(2)
 	  sales_phenol = 	SalesOutbound.where(date:sales_start..sales_end,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:metric_tons).round(2)
 		sales_acetone = 	SalesOutbound.where(date:sales_start..sales_end,product:Product.where(name:'Acetone')).sum(:metric_tons).round(2)
 		
@@ -31,8 +32,9 @@ class Api::V1::DataGetterController < ApplicationController
 
 	end
 	def inventory
-		sales_start = Date.today
-		today = Date.today
+		aday = 1.day.ago
+		sales_start = 1.day.ago
+		today = 1.day.ago
 		if today.day<8
 			sales_start = Date.new(today.year,today.month,1)
 		elsif today.day%7 == 0
@@ -44,16 +46,18 @@ class Api::V1::DataGetterController < ApplicationController
 		end
 
 		sales_end = sales_start + 7.days
-		inventory_phenol= Inventory.where(date:Date.today,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
+
+		inventory_phenol= Inventory.where(date:aday,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
 		# inventory_benzene= Inventory.where(date:Date.today,product:Product.where(name:'Benzene')).sum(:value).round(2)
-		inventory_acetone= Inventory.where(date:Date.today,product:Product.where(name:'Acetone')).sum(:value).round(2)
-		inventory_propylene= Inventory.where(date:Date.today,product:Product.where(name:'Propylene')).sum(:value).round(2)
-		inventory_cumene= Inventory.where(date:Date.today,product:Product.where(name:'Cumene')).sum(:value).round(2)
+		inventory_acetone= Inventory.where(date:aday,product:Product.where(name:'Acetone')).sum(:value).round(2)
+		inventory_propylene= Inventory.where(date:aday,product:Product.where(name:'Propylene')).sum(:value).round(2)
+		inventory_cumene= Inventory.where(date:aday,product:Product.where(name:'Cumene')).sum(:value).round(2)
 		render json:{data: {'overall':[{'name':'Phenol',"qty":inventory_phenol},{'name':'Acetone',"qty":inventory_acetone},{'name':'Propylene',"qty":inventory_propylene},{'name':'Cumene',"qty":inventory_cumene}],'tankwise':[{'name':'Phenole Rundown tank 1',"qty":251.862,'level':68.32},{'name':'Phenole Rundown tank 2',"qty":171.091,'level':46.23},{'name':'Hydrated Phenol Rundown tank',"qty":334.986,'level':82.07}]}, success: true,message:""}
 	end
 	def production
-		sales_start = Date.today
-		today = Date.today
+		aday = 1.day.ago
+		sales_start = 1.day.ago
+		today = 1.day.ago
 		if today.day<8
 			sales_start = Date.new(today.year,today.month,1)
 		elsif today.day%7 == 0
@@ -65,13 +69,15 @@ class Api::V1::DataGetterController < ApplicationController
 		end
 
 		sales_end = sales_start + 7.days
+
 		
 		render json:{data: {'plant':[{'name':'Phenol',"qty":2588.54,'operating_rate':88.21,'downtime_hours':0.00,'onstream_hours':168.00},{'name':'Cumene',"qty":3296.9282,'operating_rate':0.00,'downtime_hours':0.00,'onstream_hours':0.00}],'other':[{'name':'Acetone',"qty":1557.98},{'name':'Benzene Drag',"qty":3077.73},{'name':'AWS',"qty":140.40}]}, success: true,message:""}
 		
 	end
 	def sales
-		sales_start = Date.today
-		today = Date.today
+		aday = 1.day.ago
+		sales_start = 1.day.ago
+		today = 1.day.ago
 		if today.day<8
 			sales_start = Date.new(today.year,today.month,1)
 		elsif today.day%7 == 0
@@ -83,9 +89,10 @@ class Api::V1::DataGetterController < ApplicationController
 		end
 
 		sales_end = sales_start + 7.days
+
 		sales_phenol = 	SalesOutbound.where(date:sales_start..sales_end,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:metric_tons).round(2)
 		sales_acetone = 	SalesOutbound.where(date:sales_start..sales_end,product:Product.where(name:'Acetone')).sum(:metric_tons).round(2)
-		render json:{data: {'zone':[{'name':'Phenol','qty':'0.00','north_qty':'497.34','west_qty':'777.14','south_qty':'0.00','east_qty':'196.14','central_qty':'3000.05','export_qty':'0.00'},{'name':'Acetone','qty':'0.00','north_qty':'358.6','west_qty':'974.60','south_qty':'1249.8','east_qty':'00.00','central_qty':'3232.22','export_qty':'00.00'}],'other':[{'name':'Heavies','qty':'0.00'}]}, success: true,message:""}
+		render json:{data: {'zone':[{'name':'Phenol','qty':sales_phenol,'north_qty':'497.34','west_qty':'777.14','south_qty':'0.00','east_qty':'196.14','central_qty':'3000.05','export_qty':'0.00'},{'name':'Acetone','qty':sales_acetone,'north_qty':'358.6','west_qty':'974.60','south_qty':'1249.8','east_qty':'00.00','central_qty':'3232.22','export_qty':'00.00'}],'other':[{'name':'Heavies','qty':'0.00'}]}, success: true,message:""}
 		
 	end
 	def index
