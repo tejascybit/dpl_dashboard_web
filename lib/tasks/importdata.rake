@@ -10,6 +10,7 @@ namespace :importdata do
 
   desc "TODO"
   task get_inventory: :environment do
+
    start_date = '29-12-2018'
    end_date = '04-01-2018'
    Tank.all.each do |tank|
@@ -21,17 +22,19 @@ namespace :importdata do
       next unless key =~ /day/i
 
       date = @data['data'][key]['date']
-      date = date.to_date
-      inventory = Inventory.where('date =? and tank_id =?', date, tank.id).first
-      if inventory.blank?
-        inventory = Inventory.new
-        inventory.tank_id = tank.id
-        inventory.date = date
+      if date != 'N/A'
+        date = date.to_date
+        inventory = Inventory.where('date =? and tank_id =?', date, tank.id).first
+        if inventory.blank?
+          inventory = Inventory.new
+          inventory.tank_id = tank.id
+          inventory.date = date
+        end
+        inventory.product_id = tank.product_id
+        inventory.tank_level = @data['data']['tankLevel']
+        inventory.value = @data['data'][key]['value']
+        inventory.save
       end
-      inventory.product_id = tank.product_id
-      inventory.tank_level = @data['data']['tankLevel']
-      inventory.value = @data['data'][key]['value']
-      inventory.save
     end
    end
   end
