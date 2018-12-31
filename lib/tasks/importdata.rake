@@ -10,8 +10,8 @@ namespace :importdata do
 
   desc "TODO"
   task get_inventory: :environment do
-   start_date = '22-12-2018'
-   end_date = '28-12-2018'
+   start_date = '29-12-2018'
+   end_date = '04-01-2018'
    Tank.all.each do |tank|
     token= AccessCode.last.get_access_code
     u = 'https://dnlapps.dnlpune.com/DPLPlan/OpeningInventory?tankNumber=' + tank.tank_no + '&startDate=' + start_date + '&endDate=' + end_date + '&accessCode=' + token
@@ -46,8 +46,8 @@ namespace :importdata do
   task get_sales: :environment do
     @today = Date.today
     require 'json'
-    start_date = '22-12-2018'
-    end_date = '28-12-2018'
+    start_date = '29-12-2018'
+    end_date = '04-01-2018'
     
     ["North","East","West","South","Central","Export"].each do |pzone|
           Product.where("product_num != '0'").each do |product|
