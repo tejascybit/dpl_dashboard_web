@@ -32,20 +32,20 @@ class Api::V1::DataGetterController < ApplicationController
 
 	end
 	def inventory
-		aday = 1.day.ago
-		sales_start = 1.day.ago
-		today = 1.day.ago
+		aday = Date.today
+		sales_start = aday
+		today = aday
 		if today.day<8
 			sales_start = Date.new(today.year,today.month,1)
 		elsif today.day%7 == 0
-			sales_start = 6.days.ago
+			sales_start = aday - 6.days
 		else	
 			a = []
 			(1..today.day).each{|x| if x%7 == 0 then a.push(x) end}
 			sales_start = Date.new(today.year,today.month,(a.last+1))
 		end
 
-		sales_end = sales_start + 7.days
+		sales_end = sales_start + 6.days
 
 		inventory_phenol= Inventory.where(date:aday,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
 		# inventory_benzene= Inventory.where(date:Date.today,product:Product.where(name:'Benzene')).sum(:value).round(2)
@@ -76,8 +76,8 @@ class Api::V1::DataGetterController < ApplicationController
 	end
 	def sales
 		aday = 1.day.ago
-		sales_start = 1.day.ago
-		today = 1.day.ago
+		sales_start = aday
+		today = aday
 		if today.day<8
 			sales_start = Date.new(today.year,today.month,1)
 		elsif today.day%7 == 0

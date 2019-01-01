@@ -10,9 +10,24 @@ namespace :importdata do
 
   desc "TODO"
   task get_inventory: :environment do
-
-   start_date = '29-12-2018'
-   end_date = '04-01-2018'
+    aday = Date.today
+    sales_start = aday
+    today = aday
+    if today.day<8
+      sales_start = Date.new(today.year,today.month,1)
+    elsif today.day%7 == 0
+      sales_start = (aday - 6.days)
+    else	
+      a = []
+      (1..today.day).each{|x| if x%7 == 0 then a.push(x) end}
+      sales_start = Date.new(today.year,today.month,(a.last+1))
+    end
+    sales_end = sales_start + 6.days
+    
+    
+    start_date = sales_start.strftime('%d-%m-%Y')
+    end_date = sales_end.strftime('%d-%m-%Y')
+    
    Tank.all.each do |tank|
     token= AccessCode.last.get_access_code
     u = 'https://dnlapps.dnlpune.com/DPLPlan/OpeningInventory?tankNumber=' + tank.tank_no + '&startDate=' + start_date + '&endDate=' + end_date + '&accessCode=' + token
@@ -47,10 +62,24 @@ namespace :importdata do
 
   desc "TODO"
   task get_sales: :environment do
-    @today = Date.today
     require 'json'
-    start_date = '29-12-2018'
-    end_date = '04-01-2018'
+    aday = 1.day.ago
+    sales_start = aday
+    today = aday
+    if today.day<8
+      sales_start = Date.new(today.year,today.month,1)
+    elsif today.day%7 == 0
+      sales_start = (aday - 6.days)
+    else	
+      a = []
+      (1..today.day).each{|x| if x%7 == 0 then a.push(x) end}
+      sales_start = Date.new(today.year,today.month,(a.last+1))
+    end
+    sales_end = sales_start + 6.days
+    
+    
+    start_date = sales_start.strftime('%d-%m-%Y')
+    end_date = sales_end.strftime('%d-%m-%Y')
     
     ["North","East","West","South","Central","Export"].each do |pzone|
           Product.where("product_num != '0'").each do |product|
