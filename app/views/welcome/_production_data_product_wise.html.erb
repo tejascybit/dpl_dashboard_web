@@ -18,7 +18,7 @@
                 <% @products.each do |pro| %>
                   <tr>
                     <td><%= pro.name %></td>
-                    <td><%= pro.productions.where("date BETWEEN ? AND ?",@beginning_of_week,@today).sum(:parameters) %></td>
+                    <td><%= pro.productions.where("date BETWEEN ? AND ?",@beginning_of_week,@today).sum(:value) %></td>
                     <td>
                       <span class="badge badge-success badge-icon">
                         <i class="fa fa-check" aria-hidden="true"></i>

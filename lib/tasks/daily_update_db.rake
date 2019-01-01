@@ -1,5 +1,4 @@
 namespace :daily_update_db do
-
   desc 'Daily updated Inventory!'
   task :daily_inventory do
     puts 'Hello'
@@ -22,7 +21,7 @@ namespace :daily_update_db do
 
   # desc 'Import CSV File'
   # task :import_file do
-  #   CSV.foreach('/home/linkwok/Sonu/Projects/data.csv', headers: true) do |row|
+  #  CSV.foreach('/home/linkwok/Sonu/Projects/data.csv', headers: true) do |row|
   #     product = Product.where(name: row[4]).first
   #     if product.blank?
   #       product = Product.new

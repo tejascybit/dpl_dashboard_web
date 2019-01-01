@@ -1,0 +1,17 @@
+AllCops:
+  Exclude:
+    - 'app/controllers/api/v1/*.rb'
+    - 'app/helpers/*.rb'
+    - 'app/services/*.rb'
+    - 'config/**/*.rb'
+    - 'test/**/*.rb'
+    - 'db/**/*.rb'
+    - 'bin/*'
+    - 'Gemfile'
+    - 'Rakefile'
+Style/FrozenStringLiteralComment:
+  Enabled: false
+Style/Documentation:
+  Enabled: false
+Style/ClassAndModuleChildren:
+  Enabled: false

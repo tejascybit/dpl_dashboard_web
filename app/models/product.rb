@@ -7,9 +7,4 @@ class Product < ApplicationRecord
   has_many :inbounds
   has_many :inbound_plans
   has_many :sales_outbounds
-
-
-  def self.display
-
-  end
 end
