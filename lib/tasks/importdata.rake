@@ -90,6 +90,7 @@ namespace :importdata do
             @data['data'].keys.each do |key|
               next unless key =~ /day/i
               date = @data['data'][key]['date']
+              if date != 'N/A'
               date = date.to_date if date.present?
               sales = SalesOutbound.where('date =? and product_id =? and region =?', date, product.id, pzone).first
               if sales.blank?
@@ -103,6 +104,7 @@ namespace :importdata do
                 sales.metric_tons = @data['data'][key]['MT']
                 sales.total_tons = @data['data'][key]['TT']
                 sales.save
+              end
             end
           end
         end
