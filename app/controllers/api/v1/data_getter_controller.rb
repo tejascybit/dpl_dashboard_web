@@ -34,7 +34,7 @@ class Api::V1::DataGetterController < ApplicationController
 		production_cumene_plan = ProductionPlan.where(date:Date.yesterday,product:Product.where(name:'Cumene')).sum(:value).round(2)
 		production_per = (production_phenol + production_cumene) * 100/(production_phenol_plan + production_cumene_plan).round(2)
 
-		inbound_benzene =
+		# inbound_benzene = Inbound.where(date:Date.yesterday,material: 'unloadingData',product:Product.where(name:'unloadingData')).sum(:value).round(2)
 
 		render json:{data: {'inventory_phenol': inventory_phenol,'inventory_benzene': inventory_benzene,'inventory_acetone': inventory_acetone,'inventory_propylene':inventory_propylene,
 			'inventory_cumene': inventory_cumene,'sales_phenol': sales_phenol,'sales_acetone': sales_acetone,
