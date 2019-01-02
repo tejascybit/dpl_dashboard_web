@@ -243,23 +243,25 @@ def getting_inbound_data
 
         date = @data['data'][dkey][key]['date']
         next unless date.to_s != "N\/A"
-        inbounds = Inbound.where('date =? and product_id =? and logistic_location_id=? ', date, location.product.id, location.id).first
-        if inbounds.blank?
-          inbounds = Inbound.new
+        if dkey == "unloadingData"
+          inbounds = Inbound.where('date =? and product_id =? and logistic_location_id=? ', date, location.product.id, location.id).first
+          if inbounds.blank?
+            inbounds = Inbound.new
+            inbounds.product_id = location.product.id
+            inbounds.date = @data['data'][dkey][key]['date'].to_date
+            inbounds.total_tons = @data['data'][dkey][key]['TT']
+            inbounds.value = @data['data'][dkey][key]['MT']
+            inbounds.logistic_location_id = location.id
+            inbounds.material = dkey
+          end
           inbounds.product_id = location.product.id
-          inbounds.date = @data['data'][dkey][key]['date'].to_date
+          inbounds.date = @data['data'][dkey][key]['date']
           inbounds.total_tons = @data['data'][dkey][key]['TT']
           inbounds.value = @data['data'][dkey][key]['MT']
           inbounds.logistic_location_id = location.id
           inbounds.material = dkey
+          inbounds.save
         end
-        inbounds.product_id = location.product.id
-        inbounds.date = @data['data'][dkey][key]['date']
-        inbounds.total_tons = @data['data'][dkey][key]['TT']
-        inbounds.value = @data['data'][dkey][key]['MT']
-        inbounds.logistic_location_id = location.id
-        inbounds.material = dkey
-        inbounds.save
       end
     end
   end
