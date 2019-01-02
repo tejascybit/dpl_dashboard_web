@@ -115,7 +115,7 @@ end
 
 
 
-
+#....
 def getting_sales_data
   require 'json'
   token = generate_new_token
