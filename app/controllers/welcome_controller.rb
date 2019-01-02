@@ -211,6 +211,54 @@ def getting_production_data
           end
         end
       end
+def getting_inbound_data
+  require 'json'
+  token = generate_new_token
+  token = token['key']
+  check_token_limit(token)
+  start_date = day_range(Date.yesterday).first
+  start_date = start_date.strftime('%d-%m-%Y')
+  end_date = day_range(Date.yesterday).last
+  end_date = end_date.strftime('%d-%m-%Y')
+  LogisticLocation.all.each do |location|
+    check_token_limit(token)
+    puts check_token_limit(token)
+    if check_token_limit(token).nil? || !((check_token_limit(token).to_i > 0) && (check_token_limit(token).to_i < 100))
+      token = generate_new_token
+      token = token['key']
+      puts token
+    end
+    url = 'https://dnlapps.dnlpune.com/DPLPlan/sourcingInbound?product=' + location.product.name.downcase.to_s + '&location=' + location.name + '&startDate=' + start_date.to_s + '&endDate=' + end_date.to_s + '&accessCode=' + token
+    response = HTTParty.get(url)
+    @data = JSON.parse(response)
+    @data['data'].keys.each do |dkey|
+      @data['data'][dkey].keys.each do |key|
+        next unless key =~ /day/i
+
+        date = @data['data'][dkey][key]['date']
+        next unless date.to_s != "N\/A"
+        inbounds = Inbound.where('date =? and product_id =? and logistic_location_id=? ', date, location.product.id, location.id).first
+        if inbounds.blank?
+          inbounds = Inbound.new
+          inbounds.product_id = location.product.id
+          inbounds.date = @data['data'][dkey][key]['date'].to_date
+          inbounds.total_tons = @data['data'][dkey][key]['TT']
+          inbounds.value = @data['data'][dkey][key]['MT']
+          inbounds.logistic_location_id = location.id
+          inbounds.material = dkey
+        end
+        inbounds.product_id = location.product.id
+        inbounds.date = @data['data'][dkey][key]['date']
+        inbounds.total_tons = @data['data'][dkey][key]['TT']
+        inbounds.value = @data['data'][dkey][key]['MT']
+        inbounds.logistic_location_id = location.id
+        inbounds.material = dkey
+        inbounds.save
+      end
+    end
+  end
+end
+
 
   def production_data_product_wise
     @beginning_of_week = @today.beginning_of_week
