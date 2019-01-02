@@ -15,6 +15,12 @@ ActiveRecord::Schema.define(version: 2019_01_01_083831) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "access_codes", force: :cascade do |t|
+    t.string "access_code"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "inbound_plans", force: :cascade do |t|
     t.integer "product_id"
     t.integer "logistic_location_id"
