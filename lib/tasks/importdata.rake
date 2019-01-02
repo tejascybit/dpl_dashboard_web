@@ -58,18 +58,21 @@ namespace :importdata do
           date = @data['data'][dkey][key]['date']
           next unless date.to_s != "N\/A"
 
-          production = Production.where('date =? and product_id =? ', date.to_date, product.id).first
-          plans = ProductionPlan.where('date =? and product_id =? ', date.to_date, product.id).first
-          if plans.blank?
-            plans = ProductionPlan.new
+          production = Production.where('date =? and parameters=? and product_id =? ', date.to_date, dkey, product.id).first
+
+          if dkey == "prd"
+            plans = ProductionPlan.where('date =? and product_id =? ', date.to_date, product.id).first
+            if plans.blank?
+              plans = ProductionPlan.new
+              plans.date = date.to_date
+              plans.product_id = product.id
+              plans.value = @data['data'][dkey]['planned']
+            end
             plans.date = date.to_date
             plans.product_id = product.id
             plans.value = @data['data'][dkey]['planned']
+            plans.save
           end
-          plans.date = date.to_date
-          plans.product_id = product.id
-          plans.value = @data['data'][dkey]['planned']
-          plans.save
           if production.blank?
             production = Production.new
             production.product_id = product.id

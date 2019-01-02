@@ -34,6 +34,8 @@ class Api::V1::DataGetterController < ApplicationController
 		production_cumene_plan = ProductionPlan.where(date:Date.yesterday,product:Product.where(name:'Cumene')).sum(:value).round(2)
 		production_per = (production_phenol + production_cumene) * 100/(production_phenol_plan + production_cumene_plan).round(2)
 
+		inbound_benzene =
+
 		render json:{data: {'inventory_phenol': inventory_phenol,'inventory_benzene': inventory_benzene,'inventory_acetone': inventory_acetone,'inventory_propylene':inventory_propylene,
 			'inventory_cumene': inventory_cumene,'sales_phenol': sales_phenol,'sales_acetone': sales_acetone,
 			'production_last_update': Date.today.to_s(:long),'sales_last_update': Date.today.to_s(:long),
@@ -60,7 +62,7 @@ class Api::V1::DataGetterController < ApplicationController
 		sales_end = sales_start + 6.days
 
 		inventory_phenol= Inventory.where(date:aday,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
-		# inventory_benzene= Inventory.where(date:Date.today,product:Product.where(name:'Benzene')).sum(:value).round(2)
+		inventory_benzene= Inventory.where(date:Date.today,product:Product.where(name:'Benzene')).sum(:value).round(2)
 		inventory_acetone= Inventory.where(date:aday,product:Product.where(name:'Acetone')).sum(:value).round(2)
 		inventory_propylene= Inventory.where(date:aday,product:Product.where(name:'Propylene')).sum(:value).round(2)
 		inventory_cumene= Inventory.where(date:aday,product:Product.where(name:'Cumene')).sum(:value).round(2)
