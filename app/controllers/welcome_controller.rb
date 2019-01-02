@@ -156,17 +156,16 @@ def getting_sales_data
   end
 end
 
-
 def getting_production_data
-  require 'json'
-  token = generate_new_token
-  token = token['key']
-  check_token_limit(token)
-  start_date = day_range(Date.yesterday).first
-  start_date = start_date.strftime('%d-%m-%Y')
-  end_date = day_range(Date.yesterday).last
-  end_date = end_date.strftime('%d-%m-%Y')
-    Product.where("product_in_production = true").each do |product|
+    require 'json'
+    token = generate_new_token
+    token = token['key']
+    check_token_limit(token)
+    start_date = day_range(Date.yesterday).first
+    start_date = start_date.strftime('%d-%m-%Y')
+    end_date = day_range(Date.yesterday).last
+    end_date = end_date.strftime('%d-%m-%Y')
+    Product.where('product_in_production = true').each do |product|
       check_token_limit(token)
       puts check_token_limit(token)
       if check_token_limit(token).nil? || !((check_token_limit(token).to_i > 0) && (check_token_limit(token).to_i < 100))
@@ -174,43 +173,44 @@ def getting_production_data
         token = token['key']
         puts token
       end
-          url = 'https://dnlapps.dnlpune.com/DPLPlan/MaintenancePlanning?product=' + product.name.downcase.to_s + '&startDate=' + start_date.to_s + '&endDate=' + end_date.to_s + '&productType=' + product.production_product_type + '&capacity='+ product.product_capacity.to_s + '&accessCode=' + token
-          puts url
-          response = HTTParty.get(url)
-          @data = JSON.parse(response)
-          @data['data'].keys.each do |dkey|
-            @data['data'][dkey].keys.each do |key|
-              next unless key =~ /day/i
+      url = 'https://dnlapps.dnlpune.com/DPLPlan/MaintenancePlanning?product=' + product.name.downcase.to_s + '&startDate=' + start_date.to_s + '&endDate=' + end_date.to_s + '&productType=' + product.production_product_type + '&capacity=' + product.product_capacity.to_s + '&accessCode=' + token
+      puts url
+      response = HTTParty.get(url)
+      @data = JSON.parse(response)
+      @data['data'].keys.each do |dkey|
+        @data['data'][dkey].keys.each do |key|
+          next unless key =~ /day/i
 
-              date = @data['data'][dkey][key]['date']
-              next unless date.to_s != "N\/A"
+          date = @data['data'][dkey][key]['date']
+          next unless date.to_s != "N\/A"
 
-              production = Production.where('date =? and product_id =? ', date.to_date, product.id).first
-              plans = ProductionPlan.where('date =? and product_id =? ', date.to_date, product.id).first
-                if plans.blank?
-                  plans = ProductionPlan.new
-                  plans.date = date.to_date
-                  plans.product_id = product.id
-                  plans.value = @data['data'][dkey]['planned']
-                end
-                plans.date = date.to_date
-                plans.product_id = product.id
-                plans.value = @data['data'][dkey]['planned']
-                plans.save
-              if production.blank?
-                production = Production.new
-                production.product_id = product.id
-                production.date = date.to_date
-              end
-              production.date = date.to_date
-              production.product_id = product.id
-              production.value = @data['data'][dkey][key]['data']
-              production.parameters = dkey
-              production.save
-            end
+          production = Production.where('date =? and product_id =? ', date.to_date, product.id).first
+          plans = ProductionPlan.where('date =? and product_id =? ', date.to_date, product.id).first
+          if plans.blank?
+            plans = ProductionPlan.new
+            plans.date = date.to_date
+            plans.product_id = product.id
+            plans.value = @data['data'][dkey]['planned']
           end
+          plans.date = date.to_date
+          plans.product_id = product.id
+          plans.value = @data['data'][dkey]['planned']
+          plans.save
+          if production.blank?
+            production = Production.new
+            production.product_id = product.id
+            production.date = date.to_date
+          end
+          production.date = date.to_date
+          production.product_id = product.id
+          production.value = @data['data'][dkey][key]['data']
+          production.parameters = dkey
+          production.save
         end
       end
+    end
+end
+
 def getting_inbound_data
   require 'json'
   token = generate_new_token

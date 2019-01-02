@@ -13,22 +13,8 @@ namespace :importdata do
 
   desc "TODO"
   task get_inventory: :environment do
-    aday = Date.today
-    sales_start = aday
-    today = aday
-    if today.day<8
-      sales_start = Date.new(today.year,today.month,1)
-    elsif today.day%7 == 0
-      sales_start = (aday - 6.days)
-    else
-      a = []
-      (1..today.day).each{|x| if x%7 == 0 then a.push(x) end}
-      sales_start = Date.new(today.year,today.month,(a.last+1))
-    end
-    sales_end = sales_start + 6.days
-    start_date = sales_start.strftime('%d-%m-%Y')
-    end_date = sales_end.strftime('%d-%m-%Y')
-
+    start_date = day_range(Date.today).first.strftime('%d-%m-%Y')
+    end_date = day_range(Date.today).last.strftime('%d-%m-%Y')
    Tank.all.each do |tank|
     token= AccessCode.last.get_access_code
     u = 'https://dnlapps.dnlpune.com/DPLPlan/OpeningInventory?tankNumber=' + tank.tank_no + '&startDate=' + start_date + '&endDate=' + end_date + '&accessCode=' + token
@@ -57,10 +43,8 @@ namespace :importdata do
 
   desc "TODO"
   task get_production: :environment do
-    start_date = day_range(Date.yesterday).first
-    start_date = start_date.strftime('%d-%m-%Y')
-    end_date = day_range(Date.yesterday).last
-    end_date = end_date.strftime('%d-%m-%Y')
+    start_date = day_range(Date.yesterday).first.strftime('%d-%m-%Y')
+    end_date = day_range(Date.yesterday).last.strftime('%d-%m-%Y')
     Product.where('product_in_production = true').each do |product|
       token = AccessCode.last.get_access_code
       url = 'https://dnlapps.dnlpune.com/DPLPlan/MaintenancePlanning?product=' + product.name.downcase.to_s + '&startDate=' + start_date.to_s + '&endDate=' + end_date.to_s + '&productType=' + product.production_product_type + '&capacity=' + product.product_capacity.to_s + '&accessCode=' + token
@@ -104,25 +88,10 @@ namespace :importdata do
   desc "TODO"
   task get_sales: :environment do
     require 'json'
-    aday = 1.day.ago
-    sales_start = aday
-    today = aday
-    if today.day<8
-      sales_start = Date.new(today.year,today.month,1)
-    elsif today.day%7 == 0
-      sales_start = (aday - 6.days)
-    else
-      a = []
-      (1..today.day).each{|x| if x%7 == 0 then a.push(x) end}
-      sales_start = Date.new(today.year,today.month,(a.last+1))
-    end
-    sales_end = sales_start + 6.days
+    start_date = day_range(Date.yesterday).first.strftime('%d-%m-%Y')
+    end_date = day_range(Date.yesterday).last.strftime('%d-%m-%Y')
 
-
-    start_date = sales_start.strftime('%d-%m-%Y')
-    end_date = sales_end.strftime('%d-%m-%Y')
-
-    ["North","East","West","South","Central","Export"].each do |pzone|
+    get_product_zone.each do |pzone|
           Product.where("product_num != '0'").each do |product|
             token= AccessCode.last.get_access_code
             u ='https://dnlapps.dnlpune.com/DPLPlan/SalesOutbound?product=' + product.product_num.to_s + '&zone='+ pzone + '&startDate=' + start_date.to_s + '&endDate=' + end_date.to_s + '&accessCode=' + token
@@ -153,6 +122,40 @@ namespace :importdata do
 
   desc "TODO"
   task get_inbound: :environment do
+    start_date = day_range(Date.yesterday).first.strftime('%d-%m-%Y')
+    end_date = day_range(Date.yesterday).last.strftime('%d-%m-%Y')
+    LogisticLocation.all.each do |location|
+      token= AccessCode.last.get_access_code
+      url = 'https://dnlapps.dnlpune.com/DPLPlan/sourcingInbound?product=' + location.product.name.downcase.to_s + '&location=' + location.name + '&startDate=' + start_date.to_s + '&endDate=' + end_date.to_s + '&accessCode=' + token
+      puts url
+      response = HTTParty.get(url)
+      @data = JSON.parse(response)
+      @data['data'].keys.each do |dkey|
+        @data['data'][dkey].keys.each do |key|
+          next unless key =~ /day/i
+
+          date = @data['data'][dkey][key]['date']
+          next unless date.to_s != "N\/A"
+          inbounds = Inbound.where('date =? and product_id =? and logistic_location_id=? ', date, location.product.id, location.id).first
+          if inbounds.blank?
+            inbounds = Inbound.new
+            inbounds.product_id = location.product.id
+            inbounds.date = @data['data'][dkey][key]['date'].to_date
+            inbounds.total_tons = @data['data'][dkey][key]['TT']
+            inbounds.value = @data['data'][dkey][key]['MT']
+            inbounds.logistic_location_id = location.id
+            inbounds.material = dkey
+          end
+          inbounds.product_id = location.product.id
+          inbounds.date = @data['data'][dkey][key]['date']
+          inbounds.total_tons = @data['data'][dkey][key]['TT']
+          inbounds.value = @data['data'][dkey][key]['MT']
+          inbounds.logistic_location_id = location.id
+          inbounds.material = dkey
+          inbounds.save
+        end
+      end
+    end
 
   end
 
