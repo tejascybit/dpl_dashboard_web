@@ -4,7 +4,7 @@ class WelcomeController < ApplicationController
   before_action :get_products, only: %i[index production_data_product_wise all_inventory getting_inventory_data getting_sales_data sales_data_product_wise]
   before_action :get_params_date, only: %i[index production_data_product_wise getting_api_data all_inventory]
   include ApplicationHelper
-  MT = 10_000
+  MT = 10000
   def index
     if !params[:track_mode].present?
       @month = params[:track_mode]
@@ -14,6 +14,8 @@ class WelcomeController < ApplicationController
 
     @beginning_of_week = @today.beginning_of_week
     @end_of_month = Date.today.end_of_week
+    aday = day_range(Date.yesterday)
+
 
     final_data = {}
     @pro_name = @products.each do |prd|
@@ -113,9 +115,6 @@ end
 #   end
 # end
 
-
-
-#....
 def getting_sales_data
   require 'json'
   token = generate_new_token
@@ -184,26 +183,29 @@ def getting_production_data
       @data['data'].keys.each do |dkey|
         @data['data'][dkey].keys.each do |key|
           next unless key =~ /day/i
-
           date = @data['data'][dkey][key]['date']
+
           next unless date.to_s != "N\/A"
 
-          production = Production.where('date =? and product_id =? ', date.to_date, product.id).first
-          plans = ProductionPlan.where('date =? and product_id =? ', date.to_date, product.id).first
-          if plans.blank?
-            plans = ProductionPlan.new
+          production = Production.where('date =? and parameters=? and product_id =? ', date.to_date, dkey, product.id).first
+
+          if dkey == "prd"
+            plans = ProductionPlan.where('date =? and product_id =? ', date.to_date, product.id).first
+            if plans.blank?
+              plans = ProductionPlan.new
+              plans.date = date.to_date
+              plans.product_id = product.id
+              plans.value = @data['data'][dkey]['planned']
+            end
             plans.date = date.to_date
             plans.product_id = product.id
             plans.value = @data['data'][dkey]['planned']
+            plans.save
           end
-          plans.date = date.to_date
-          plans.product_id = product.id
-          plans.value = @data['data'][dkey]['planned']
-          plans.save
           if production.blank?
             production = Production.new
-            production.product_id = product.id
             production.date = date.to_date
+            production.product_id = product.id
           end
           production.date = date.to_date
           production.product_id = product.id

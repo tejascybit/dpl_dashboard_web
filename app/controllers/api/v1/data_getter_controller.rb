@@ -12,7 +12,7 @@ class Api::V1::DataGetterController < ApplicationController
 			sales_start = Date.new(today.year,today.month,1)
 		elsif today.day%7 == 0
 			sales_start = 6.days.ago
-		else	
+		else
 			a = []
 			(1..today.day).each{|x| if x%7 == 0 then a.push(x) end}
 			sales_start = Date.new(today.year,today.month,(a.last+1))
@@ -27,8 +27,20 @@ class Api::V1::DataGetterController < ApplicationController
 		inventory_cumene= Inventory.where(date:aday,product:Product.where(name:'Cumene')).sum(:value).round(2)
 	  sales_phenol = 	SalesOutbound.where(date:sales_start..sales_end,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:metric_tons).round(2)
 		sales_acetone = 	SalesOutbound.where(date:sales_start..sales_end,product:Product.where(name:'Acetone')).sum(:metric_tons).round(2)
-		
-		render json:{data: {'inventory_phenol': inventory_phenol,'inventory_benzene': inventory_benzene,'inventory_acetone':inventory_acetone,'inventory_propylene':inventory_propylene,'inventory_cumene':inventory_cumene,'sales_phenol':sales_phenol,'sales_acetone':sales_acetone,'production_last_update':Date.today.to_s(:long),'sales_last_update':Date.today.to_s(:long),'production_phenol_total':2588.54,'production_phenol_plan':5904.0,'production_cumene_total':3296.9282,'production_cumene_plan':7488.0,'production_per':43.94,'production_progress':'warning','inbound_benzene_mt_tt':'1935.52 MT [87 TT]','inbound_prpylene_mt_tt':'1659.52 MT [104 TT]','inbound_cumene_mt_tt':'00 MT [0 TT]','inbound_coal_mt_tt':'1927.2301 MT [72 TT]'}, success: true,message:""}
+
+		production_phenol =  Production.where(date:Date.yesterday,parameters: 'prd',product:Product.where(name:'Phenol')).sum(:value).round(2)
+		production_cumene =  Production.where(date:Date.yesterday,parameters: 'prd',product:Product.where(name:'Cumene')).sum(:value).round(2)
+		production_phenol_plan = ProductionPlan.where(date:Date.yesterday,product:Product.where(name:'Phenol')).sum(:value).round(2)
+		production_cumene_plan = ProductionPlan.where(date:Date.yesterday,product:Product.where(name:'Cumene')).sum(:value).round(2)
+		production_per = (production_phenol + production_cumene) * 100/(production_phenol_plan + production_cumene_plan).round(2)
+
+		render json:{data: {'inventory_phenol': inventory_phenol,'inventory_benzene': inventory_benzene,'inventory_acetone': inventory_acetone,'inventory_propylene':inventory_propylene,
+			'inventory_cumene': inventory_cumene,'sales_phenol': sales_phenol,'sales_acetone': sales_acetone,
+			'production_last_update': Date.today.to_s(:long),'sales_last_update': Date.today.to_s(:long),
+			'production_phenol_total': production_phenol,'production_phenol_plan': production_phenol_plan,'production_cumene_total': production_cumene,
+			'production_cumene_plan': production_cumene_plan,'production_per': production_per,'production_progress': 'warning',
+			'inbound_benzene_mt_tt': '1935.52 MT [87 TT]','inbound_prpylene_mt_tt': '1659.52 MT [104 TT]',
+			'inbound_cumene_mt_tt': '00 MT [0 TT]','inbound_coal_mt_tt': '1927.2301 MT [72 TT]'}, success: true,message: ""}
 
 	end
 	def inventory
@@ -39,7 +51,7 @@ class Api::V1::DataGetterController < ApplicationController
 			sales_start = Date.new(today.year,today.month,1)
 		elsif today.day%7 == 0
 			sales_start = aday - 6.days
-		else	
+		else
 			a = []
 			(1..today.day).each{|x| if x%7 == 0 then a.push(x) end}
 			sales_start = Date.new(today.year,today.month,(a.last+1))
@@ -62,7 +74,7 @@ class Api::V1::DataGetterController < ApplicationController
 			sales_start = Date.new(today.year,today.month,1)
 		elsif today.day%7 == 0
 			sales_start = 6.days.ago
-		else	
+		else
 			a = []
 			(1..today.day).each{|x| if x%7 == 0 then a.push(x) end}
 			sales_start = Date.new(today.year,today.month,(a.last+1))
@@ -70,9 +82,9 @@ class Api::V1::DataGetterController < ApplicationController
 
 		sales_end = sales_start + 7.days
 
-		
+
 		render json:{data: {'plant':[{'name':'Phenol',"qty":2588.54,'operating_rate':88.21,'downtime_hours':0.00,'onstream_hours':168.00},{'name':'Cumene',"qty":3296.9282,'operating_rate':0.00,'downtime_hours':0.00,'onstream_hours':0.00}],'other':[{'name':'Acetone',"qty":1557.98},{'name':'Benzene Drag',"qty":3077.73},{'name':'AWS',"qty":140.40}]}, success: true,message:""}
-		
+
 	end
 	def sales
 		aday = 1.day.ago
@@ -82,7 +94,7 @@ class Api::V1::DataGetterController < ApplicationController
 			sales_start = Date.new(today.year,today.month,1)
 		elsif today.day%7 == 0
 			sales_start = 6.days.ago
-		else	
+		else
 			a = []
 			(1..today.day).each{|x| if x%7 == 0 then a.push(x) end}
 			sales_start = Date.new(today.year,today.month,(a.last+1))
@@ -93,7 +105,7 @@ class Api::V1::DataGetterController < ApplicationController
 		sales_phenol = 	SalesOutbound.where(date:sales_start..sales_end,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:metric_tons).round(2)
 		sales_acetone = 	SalesOutbound.where(date:sales_start..sales_end,product:Product.where(name:'Acetone')).sum(:metric_tons).round(2)
 		render json:{data: {'zone':[{'name':'Phenol','qty':sales_phenol,'north_qty':'497.34','west_qty':'777.14','south_qty':'0.00','east_qty':'196.14','central_qty':'3000.05','export_qty':'0.00'},{'name':'Acetone','qty':sales_acetone,'north_qty':'358.6','west_qty':'974.60','south_qty':'1249.8','east_qty':'00.00','central_qty':'3232.22','export_qty':'00.00'}],'other':[{'name':'Heavies','qty':'0.00'}]}, success: true,message:""}
-		
+
 	end
 	def index
     @response = HTTParty.get("http://172.16.16.96:8081/DPLPlan/OpeningInventory?tankNumber=10-T-5101A&startDate=01-12-2018&endDate=07-12-2018&accessCode=CYBITTEST").parsed_response
