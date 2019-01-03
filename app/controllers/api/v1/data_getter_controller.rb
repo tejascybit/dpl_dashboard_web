@@ -63,11 +63,11 @@ class Api::V1::DataGetterController < ApplicationController
 
 		sales_end = sales_start + 6.days
 
-		inventory_phenol= Inventory.where(date:aday,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
-		inventory_benzene= Inventory.where(date:Date.today,product:Product.where(name:'Benzene')).sum(:value).round(2)
-		inventory_acetone= Inventory.where(date:aday,product:Product.where(name:'Acetone')).sum(:value).round(2)
-		inventory_propylene= Inventory.where(date:aday,product:Product.where(name:'Propylene')).sum(:value).round(2)
-		inventory_cumene= Inventory.where(date:aday,product:Product.where(name:'Cumene')).sum(:value).round(2)
+		inventory_phenol= Inventory.where(date: Date.today,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
+		inventory_benzene= Inventory.where(date: Date.today,product:Product.where(name:'Benzene')).sum(:value).round(2)
+		inventory_acetone= Inventory.where(date: Date.today,product:Product.where(name:'Acetone')).sum(:value).round(2)
+		inventory_propylene= Inventory.where(date: Date.today,product:Product.where(name:'Propylene')).sum(:value).round(2)
+		inventory_cumene= Inventory.where(date: Date.today,product:Product.where(name:'Cumene')).sum(:value).round(2)
 		render json:{data: {'overall':[{'name':'Phenol',"qty":inventory_phenol},{'name':'Acetone',"qty":inventory_acetone},{'name':'Propylene',"qty":inventory_propylene},{'name':'Cumene',"qty":inventory_cumene}],'tankwise':[{'name':'Phenole Rundown tank 1',"qty":251.862,'level':68.32},{'name':'Phenole Rundown tank 2',"qty":171.091,'level':46.23},{'name':'Hydrated Phenol Rundown tank',"qty":334.986,'level':82.07}]}, success: true,message:""}
 	end
 	def production

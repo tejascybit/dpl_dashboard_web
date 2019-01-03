@@ -6,6 +6,7 @@ class WelcomeController < ApplicationController
   include ApplicationHelper
   MT = 10000
   def index
+s
     if !params[:track_mode].present?
       @month = params[:track_mode]
     else
