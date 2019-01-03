@@ -235,6 +235,7 @@ def getting_inbound_data
       puts token
     end
     url = 'https://dnlapps.dnlpune.com/DPLPlan/sourcingInbound?product=' + location.product.name.downcase.to_s + '&location=' + location.name + '&startDate=' + start_date.to_s + '&endDate=' + end_date.to_s + '&accessCode=' + token
+    puts url
     response = HTTParty.get(url)
     @data = JSON.parse(response)
     @data['data'].keys.each do |dkey|
