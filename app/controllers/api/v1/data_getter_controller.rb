@@ -50,7 +50,7 @@ class Api::V1::DataGetterController < ApplicationController
 			'production_phenol_total': production_phenol,'production_phenol_plan': production_phenol_plan,'production_cumene_total': production_cumene,
 			'production_cumene_plan': production_cumene_plan,'production_per': production_per,'production_progress': 'warning',
 			'inbound_cumene_mt_tt': inbound_cumene_mt.to_s + ' MT [' + inbound_cumene_tt.to_s + ' TT]',
-			'inbound_coal_mt_tt': inbound_coal_mt.to_s + ' MT [' + inbound_coal_tt.to_s + ' TT]',
+			'inbound_coal_mt_tt': inbound_coal_mt,
 			'inbound_benzene_mt_tt': inbound_benzene_mt.to_s + ' MT ['+inbound_benzene_tt.to_s+' TT]',
 			'inbound_propylene_mt_tt': inbound_propylene_mt.to_s + ' MT ['+inbound_propylene_tt.to_s+' TT]','inbound_coal_mt_tt': '1927.2301 MT [72 TT]'}, success: true,message: ""}
 
