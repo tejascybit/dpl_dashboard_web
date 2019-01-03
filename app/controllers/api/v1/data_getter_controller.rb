@@ -34,7 +34,7 @@ class Api::V1::DataGetterController < ApplicationController
 		production_cumene_plan = ProductionPlan.where(date:Date.yesterday,product:Product.where(name:'Cumene')).sum(:value).round(2)
 		production_per = ((production_phenol + production_cumene) * 100/(production_phenol_plan + production_cumene_plan)).round(1)
 
-		inbound_coal_mt = Inbound.where(date: Date.yesterday,product:Product.where(name:'Coal'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
+		inbound_coal_mt = Inbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:'Coal'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
 		inbound_cumene_mt = Inbound.where(date: Date.yesterday,product:Product.where(name:'Cumene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
 		inbound_benzene_mt = Inbound.where(date: Date.yesterday,product:Product.where(name:'Benzene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
 		inbound_propylene_mt = Inbound.where(date: Date.yesterday,product:Product.where(name:'Propylene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
@@ -50,9 +50,9 @@ class Api::V1::DataGetterController < ApplicationController
 			'production_phenol_total': production_phenol,'production_phenol_plan': production_phenol_plan,'production_cumene_total': production_cumene,
 			'production_cumene_plan': production_cumene_plan,'production_per': production_per,'production_progress': 'warning',
 			'inbound_cumene_mt_tt': inbound_cumene_mt.to_s + ' MT [' + inbound_cumene_tt.to_s + ' TT]',
-			'inbound_coal_mt_tt': inbound_coal_mt,
-			'inbound_benzene_mt_tt': inbound_benzene_mt.to_s + ' MT ['+inbound_benzene_tt.to_s+' TT]',
-			'inbound_propylene_mt_tt': inbound_propylene_mt.to_s + ' MT ['+inbound_propylene_tt.to_s+' TT]','inbound_coal_mt_tt': '1927.2301 MT [72 TT]'}, success: true,message: ""}
+			'inbound_coal_mt_tt': inbound_coal_mt.to_s + ' MT [' + inbound_coal_tt.to_s + ' TT]',
+			'inbound_benzene_mt_tt': inbound_benzene_mt.to_s + ' MT [' + inbound_benzene_tt.to_s +' TT]',
+			'inbound_prpylene_mt_tt': inbound_propylene_mt.to_s + ' MT [' + inbound_propylene_tt.to_s +' TT]'}, success: true,message: ""}
 
 	end
 	def inventory
