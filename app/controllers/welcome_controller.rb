@@ -11,6 +11,15 @@ class WelcomeController < ApplicationController
     else
       params[:track_mode] = 'Monthly'
     end
+    inbound_coal_mt = Inbound.where(date: Date.yesterday,product:Product.where(name:'Coal'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
+    inbound_cumene_mt = Inbound.where(date: Date.yesterday,product:Product.where(name:'Cumene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
+    inbound_benzene_mt = Inbound.where(date: Date.yesterday,product:Product.where(name:'Benzene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
+    inbound_propylene_mt = Inbound.where(date: Date.yesterday,product:Product.where(name:'Propylene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
+
+    inbound_coal_tt = Inbound.where(date: Date.yesterday,product:Product.where(name:'Coal'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
+    inbound_cumene_tt = Inbound.where(date: Date.yesterday,product:Product.where(name:'Cumene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
+    inbound_benzene_tt = Inbound.where(date: Date.yesterday,product:Product.where(name:'Benzene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
+    inbound_propylene_tt = Inbound.where(date: Date.yesterday,product:Product.where(name:'Propylene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
 
     @beginning_of_week = @today.beginning_of_week
     @end_of_month = Date.today.end_of_week
