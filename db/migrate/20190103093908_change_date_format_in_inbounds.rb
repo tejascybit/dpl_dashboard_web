@@ -1,12 +1,5 @@
 class ChangeDateFormatInInbounds < ActiveRecord::Migration[5.2]
   def change
+    change_column :inbounds, :date, :date
   end
-
-  def up
-  change_column :inbounds, :date, :datetime
- end
-
- def down
-  change_column :inbounds, :date, :date
- end
 end
