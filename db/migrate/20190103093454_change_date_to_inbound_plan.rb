@@ -1,5 +1,5 @@
 class ChangeDateToInboundPlan < ActiveRecord::Migration[5.2]
   def change
-    change_column :inbound_plans, :date, :date
+    remove_column :inbound_plans, :date
   end
 end
