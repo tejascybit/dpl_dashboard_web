@@ -51,8 +51,8 @@ class Api::V1::DataGetterController < ApplicationController
 			'production_cumene_plan': production_cumene_plan,'production_per': production_per,'production_progress': 'warning',
 			'inbound_cumene_mt_tt': inbound_cumene_mt.to_s + ' MT [' + inbound_cumene_tt.to_s + ' TT]',
 			'inbound_coal_mt_tt': inbound_coal_mt.to_s + ' MT [' + inbound_coal_tt.to_s + ' TT]',
-			'inbound_benzene_mt_tt': inbound_benzene_mt.to_s + ' MT [' + inbound_benzene_tt.to_s +' TT]',
-			'inbound_prpylene_mt_tt': inbound_propylene_mt.to_s + ' MT [' + inbound_propylene_tt.to_s +' TT]'}, success: true,message: ""}
+			'inbound_benzene_mt_tt': inbound_benzene_mt.to_s + ' MT ['+inbound_benzene_tt.to_s+' TT]',
+			'inbound_propylene_mt_tt': inbound_propylene_mt.to_s + ' MT ['+inbound_propylene_tt.to_s+' TT]' }, success: true,message: ""}
 
 	end
 	def inventory
