@@ -24,7 +24,7 @@ ActiveRecord::Schema.define(version: 2019_01_02_130620) do
   create_table "inbound_plans", force: :cascade do |t|
     t.integer "product_id"
     t.integer "logistic_location_id"
-    t.string "date"
+    t.date "date"
     t.float "value"
     t.string "material"
     t.datetime "created_at", null: false
@@ -34,7 +34,7 @@ ActiveRecord::Schema.define(version: 2019_01_02_130620) do
   create_table "inbounds", force: :cascade do |t|
     t.integer "product_id"
     t.integer "logistic_location_id"
-    t.string "date"
+    t.date "date"
     t.float "value"
     t.string "material"
     t.integer "total_tons"
@@ -80,9 +80,9 @@ ActiveRecord::Schema.define(version: 2019_01_02_130620) do
     t.string "name"
     t.string "product_type"
     t.string "product_num"
-    t.integer "product_capacity"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "product_capacity"
     t.boolean "product_in_production", default: false
     t.string "production_product_type", default: "other"
   end

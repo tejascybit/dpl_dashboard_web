@@ -33,7 +33,7 @@ class Api::V1::DataGetterController < ApplicationController
 		production_phenol_plan = ProductionPlan.where(date:Date.yesterday,product:Product.where(name:'Phenol')).sum(:value).round(2)
 		production_cumene_plan = ProductionPlan.where(date:Date.yesterday,product:Product.where(name:'Cumene')).sum(:value).round(2)
 		production_per = ((production_phenol + production_cumene) * 100/(production_phenol_plan + production_cumene_plan)).round(1)
-		#
+
 		inbound_coal_mt = Inbound.where(date: Date.yesterday,product:Product.where(name:'Coal'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
 		inbound_cumene_mt = Inbound.where(date: Date.yesterday,product:Product.where(name:'Cumene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
 		inbound_benzene_mt = Inbound.where(date: Date.yesterday,product:Product.where(name:'Benzene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
