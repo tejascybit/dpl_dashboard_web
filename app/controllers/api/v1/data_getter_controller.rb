@@ -33,15 +33,26 @@ class Api::V1::DataGetterController < ApplicationController
 		production_phenol_plan = ProductionPlan.where(date:Date.yesterday,product:Product.where(name:'Phenol')).sum(:value).round(2)
 		production_cumene_plan = ProductionPlan.where(date:Date.yesterday,product:Product.where(name:'Cumene')).sum(:value).round(2)
 		production_per = ((production_phenol + production_cumene) * 100/(production_phenol_plan + production_cumene_plan)).round(1)
+		#
+		inbound_coal_mt = Inbound.where(date: Date.yesterday,product:Product.where(name:'Coal'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
+		inbound_cumene_mt = Inbound.where(date: Date.yesterday,product:Product.where(name:'Cumene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
+		inbound_benzene_mt = Inbound.where(date: Date.yesterday,product:Product.where(name:'Benzene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
+		inbound_propylene_mt = Inbound.where(date: Date.yesterday,product:Product.where(name:'Propylene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
 
-		# inbound_benzene = Inbound.where(date:Date.yesterday,material: 'unloadingData',product:Product.where(name:'unloadingData')).sum(:value).round(2)
+		inbound_coal_tt = Inbound.where(date: Date.yesterday,product:Product.where(name:'Coal'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
+		inbound_cumene_tt = Inbound.where(date: Date.yesterday,product:Product.where(name:'Cumene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
+		inbound_benzene_tt = Inbound.where(date: Date.yesterday,product:Product.where(name:'Benzene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
+		inbound_propylene_tt = Inbound.where(date: Date.yesterday,product:Product.where(name:'Propylene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
 
 		render json:{data: {'inventory_phenol': inventory_phenol,'inventory_benzene': inventory_benzene,'inventory_acetone': inventory_acetone,'inventory_propylene':inventory_propylene,
 			'inventory_cumene': inventory_cumene,'sales_phenol': sales_phenol,'sales_acetone': sales_acetone,
 			'production_last_update': Date.today.to_s(:long),'sales_last_update': Date.today.to_s(:long),
 			'production_phenol_total': production_phenol,'production_phenol_plan': production_phenol_plan,'production_cumene_total': production_cumene,
 			'production_cumene_plan': production_cumene_plan,'production_per': production_per,'production_progress': 'warning',
-			'inbound_benzene_mt_tt': '1935.52 MT [87 TT]','inbound_prpylene_mt_tt': '1659.52 MT [104 TT]',
+			'inbound_benzene_mt_tt': inbound_cumene_mt.to_s +' MT ['+inbound_cumene_tt.to_s+' TT]',
+			'inbound_benzene_mt_tt': inbound_coal_mt.to_s +' MT ['+inbound_coal_tt.to_s+' TT]',
+			'inbound_benzene_mt_tt': inbound_benzene_mt.to_s +' MT ['+inbound_benzene_tt.to_s+' TT]',
+			'inbound_benzene_mt_tt': inbound_propylene_mt.to_s +' MT ['+inbound_propylene_tt.to_s+' TT]',
 			'inbound_cumene_mt_tt': '00 MT [0 TT]','inbound_coal_mt_tt': '1927.2301 MT [72 TT]'}, success: true,message: ""}
 
 	end
