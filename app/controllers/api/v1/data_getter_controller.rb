@@ -24,15 +24,14 @@ class Api::V1::DataGetterController < ApplicationController
 		inventory_benzene= Inventory.where(date:aday,product:Product.where(name:'Benzene')).sum(:value).round(2)
 		inventory_acetone= Inventory.where(date:aday,product:Product.where(name:'Acetone')).sum(:value).round(2)
 		inventory_propylene= Inventory.where(date:aday,product:Product.where(name:'Propylene')).sum(:value).round(2)
+		inventory_ams= Inventory.where(date:aday,product:Product.where(name:'AMS')).sum(:value).round(2)
 		inventory_cumene= Inventory.where(date:aday,product:Product.where(name:'Cumene')).sum(:value).round(2)
 	  sales_phenol = 	SalesOutbound.where(date:sales_start..sales_end,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:metric_tons).round(2)
 		sales_acetone = 	SalesOutbound.where(date:sales_start..sales_end,product:Product.where(name:'Acetone')).sum(:metric_tons).round(2)
 
 		production_phenol =  Production.where(date:Date.yesterday,parameters: 'prd',product:Product.where(name:'Phenol')).sum(:value).round(2)
-		production_cumene =  Production.where(date:Date.yesterday,parameters: 'prd',product:Product.where(name:'Cumene')).sum(:value).round(2)
 		production_phenol_plan = ProductionPlan.where(date:Date.yesterday,product:Product.where(name:'Phenol')).sum(:value).round(2)
-		production_cumene_plan = ProductionPlan.where(date:Date.yesterday,product:Product.where(name:'Cumene')).sum(:value).round(2)
-		production_per = ((production_phenol + production_cumene) * 100/(production_phenol_plan + production_cumene_plan)).round(1)
+		production_per = ((production_phenol) * 100/(production_phenol_plan)).round(1)
 
 		inbound_coal_mt = Inbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:'Coal'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
 		inbound_cumene_mt = Inbound.where(date: Date.yesterday,product:Product.where(name:'Cumene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
@@ -44,7 +43,7 @@ class Api::V1::DataGetterController < ApplicationController
 		inbound_benzene_tt = Inbound.where(date: Date.yesterday,product:Product.where(name:'Benzene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:total_tons).round(2)
 		inbound_propylene_tt = Inbound.where(date: Date.yesterday,product:Product.where(name:'Propylene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:total_tons).round(2)
 
-		render json:{data: { 'inventory_phenol': inventory_phenol, 'inventory_benzene': inventory_benzene, 'inventory_acetone': inventory_acetone, 'inventory_propylene': inventory_propylene, 'inventory_cumene': inventory_cumene, 'sales_phenol': sales_phenol, 'sales_acetone': sales_acetone, 'production_last_update': Date.today.to_s(:long), 'sales_last_update': Date.today.to_s(:long), 'production_phenol_total': production_phenol, 'production_phenol_plan': production_phenol_plan, 'production_cumene_total': production_cumene, 'production_cumene_plan': production_cumene_plan, 'production_per': production_per, 'production_progress': 'warning', 'inbound_cumene_mt_tt': (inbound_cumene_mt.to_s + " MT [" + inbound_cumene_tt.to_s + " TT]"), 'inbound_coal_mt_tt': (inbound_coal_mt.to_s + " MT [" + inbound_coal_tt.to_s + " TT]"), 'inbound_benzene_mt_tt': (inbound_benzene_mt.to_s + " MT [" + inbound_benzene_tt.to_s + " TT]"), 'inbound_prpylene_mt_tt': (inbound_propylene_mt.to_s + " MT [" + inbound_propylene_tt.to_s + " TT]") }, success: true, message: ""}
+		render json:{data: { 'inventory_phenol': inventory_phenol, 'inventory_benzene': inventory_benzene, 'inventory_acetone': inventory_acetone, 'inventory_propylene': inventory_propylene, 'inventory_cumene': inventory_cumene, 'inventory_ams': inventory_ams, 'sales_phenol': sales_phenol, 'sales_acetone': sales_acetone, 'production_last_update': Date.today.to_s(:long), 'sales_last_update': Date.today.to_s(:long), 'production_phenol_total': production_phenol, 'production_phenol_plan': production_phenol_plan, 'production_per': production_per, 'production_progress': 'warning', 'inbound_cumene_mt_tt': (inbound_cumene_mt.to_s + " MT [" + inbound_cumene_tt.to_s + " TT]"), 'inbound_coal_mt_tt': (inbound_coal_mt.to_s + " MT [" + inbound_coal_tt.to_s + " TT]"), 'inbound_benzene_mt_tt': (inbound_benzene_mt.to_s + " MT [" + inbound_benzene_tt.to_s + " TT]"), 'inbound_prpylene_mt_tt': (inbound_propylene_mt.to_s + " MT [" + inbound_propylene_tt.to_s + " TT]") }, success: true, message: ""}
 
 	end
 	def inventory
@@ -132,27 +131,17 @@ class Api::V1::DataGetterController < ApplicationController
 		sales_phenol = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'), product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:metric_tons).round(2)
 		sales_acetone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'), product:Product.where(name:'Acetone')).sum(:metric_tons).round(2)
 
-		phenol_north_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Phenol','Hydrated Phenol']),region: 'North').sum(:metric_tons).round(2)
-		phenol_west_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Phenol','Hydrated Phenol']),region: 'West').sum(:metric_tons).round(2)
-		phenol_south_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Phenol','Hydrated Phenol']),region: 'South').sum(:metric_tons).round(2)
-		phenol_east_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Phenol','Hydrated Phenol']),region: 'East').sum(:metric_tons).round(2)
-		phenol_central_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Phenol','Hydrated Phenol']),region: 'Central').sum(:metric_tons).round(2)
-		phenol_export_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Phenol','Hydrated Phenol']),region: 'Export').sum(:metric_tons).round(2)
+		hydrated_phenol_tt = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Hydrated Phenol'])).sum(:metric_tons).round(2)
+		phenol_tt = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Phenol'])).sum(:metric_tons).round(2)
 
-		acetone_north_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name: 'Acetone'),region: 'North').sum(:metric_tons).round(2)
-		acetone_west_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name: 'Acetone' ),region: 'West').sum(:metric_tons).round(2)
-		acetone_south_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name: 'Acetone' ),region: 'South').sum(:metric_tons).round(2)
-		acetone_east_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name: 'Acetone' ),region: 'East').sum(:metric_tons).round(2)
-		acetone_central_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name: 'Acetone' ),region: 'Central').sum(:metric_tons).round(2)
-		acetone_export_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name: 'Acetone' ),region: 'Export').sum(:metric_tons).round(2)
 
-		heives_other_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Heavies']),region: 'other').sum(:metric_tons).round(2)
-
-		render json:{data: {'zone': [{ 'name': 'Phenol', 'qty': sales_phenol, 'north_qty': phenol_north_zone, 'west_qty': phenol_west_zone, 'south_qty': phenol_south_zone, 'east_qty': phenol_east_zone, 'central_qty': phenol_central_zone, 'export_qty': phenol_export_zone},
-			                           { 'name': 'Acetone', 'qty': sales_acetone, 'north_qty': acetone_north_zone, 'west_qty': acetone_west_zone, 'south_qty': acetone_south_zone, 'east_qty': acetone_east_zone, 'central_qty': acetone_central_zone, 'export_qty': acetone_export_zone}
-																 ]}, success: true, message: ""}
+		render json:{data: {'zone': [{ 'name': 'Phenol', 'qty': sales_phenol, 'hydrated_tankers': hydrated_phenol_tt, 'molten': phenol_tt},
+			                           { 'name': 'Acetone', 'qty': sales_acetone}]}, success: true, message: ""}
 
 	end
+
+
+
 	def index
     @response = HTTParty.get("http://172.16.16.96:8081/DPLPlan/OpeningInventory?tankNumber=10-T-5101A&startDate=01-12-2018&endDate=07-12-2018&accessCode=CYBITTEST").parsed_response
      respond_to do |format|
