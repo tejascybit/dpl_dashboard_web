@@ -47,7 +47,7 @@ namespace :importdata do
     end_date = day_range(Date.yesterday).last.strftime('%d-%m-%Y')
     Product.where('product_in_production = true').each do |product|
       token = AccessCode.last.get_access_code
-      url = 'https://dnlapps.dnlpune.com/DPLPlan/MaintenancePlanning?product=' + product.name.downcase.to_s + '&startDate=' + start_date.to_s + '&endDate=' + end_date.to_s + '&productType=' + product.production_product_type + '&capacity=' + product.product_capacity.to_s + '&accessCode=' + token
+      url = 'https://dnlapps.dnlpune.com/DPLPlan/MaintenancePlanning?product=' + product.product_code + '&startDate=' + start_date.to_s + '&endDate=' + end_date.to_s + '&productType=' + product.production_product_type + '&capacity=' + product.product_capacity.to_s + '&accessCode=' + token
       puts url
       response = HTTParty.get(url)
       @data = JSON.parse(response)
