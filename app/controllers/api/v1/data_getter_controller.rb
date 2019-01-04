@@ -116,9 +116,23 @@ class Api::V1::DataGetterController < ApplicationController
 		sales_acetone = 	SalesOutbound.where(date:sales_start..sales_end,product:Product.where(name:'Acetone')).sum(:metric_tons).round(2)
 
 		phenol_north_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Phenol','Hydrated Phenol']),region: 'North').sum(:metric_tons).round(2)
+		phenol_west_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Phenol','Hydrated Phenol']),region: 'West').sum(:metric_tons).round(2)
+		phenol_south_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Phenol','Hydrated Phenol']),region: 'South').sum(:metric_tons).round(2)
+		phenol_east_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Phenol','Hydrated Phenol']),region: 'East').sum(:metric_tons).round(2)
+		phenol_central_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Phenol','Hydrated Phenol']),region: 'Central').sum(:metric_tons).round(2)
+		phenol_export_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Phenol','Hydrated Phenol']),region: 'Export').sum(:metric_tons).round(2)
 
+		acetone_north_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Acetone']),region: 'North').sum(:metric_tons).round(2)
+		acetone_west_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Acetone']),region: 'West').sum(:metric_tons).round(2)
+		acetone_south_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Acetone']),region: 'South').sum(:metric_tons).round(2)
+		acetone_east_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Acetone']),region: 'East').sum(:metric_tons).round(2)
+		acetone_central_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Acetone']),region: 'Central').sum(:metric_tons).round(2)
+		acetone_export_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Acetone']),region: 'Export').sum(:metric_tons).round(2)
 
-		render json:{data: {'zone':[{'name':'Phenol','qty':sales_phenol,'north_qty': phenol_north_zone ,'west_qty':'777.14','south_qty':'0.00','east_qty':'196.14','central_qty':'3000.05','export_qty':'0.00'},{'name':'Acetone','qty':sales_acetone,'north_qty':'358.6','west_qty':'974.60','south_qty':'1249.8','east_qty':'00.00','central_qty':'3232.22','export_qty':'00.00'}],'other':[{'name':'Heavies','qty':'0.00'}]}, success: true,message:""}
+		heives_other_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Heavies']),region: 'other').sum(:metric_tons).round(2)
+
+		render json:{data: {'zone':[{'name':'Phenol','qty':sales_phenol,'north_qty': phenol_north_zone ,'west_qty': phenol_west_zone,'south_qty': phenol_south_zone,'east_qty': phenol_east_zone,'central_qty': phenol_central_zone,'export_qty': phenol_export_zone},
+			{'name': 'Acetone','qty': sales_acetone,'north_qty': acetone_north_zone,'west_qty': acetone_west_zone,'south_qty': acetone_south_zone, 'east_qty' : acetone_east_zone,'central_qty': acetone_east_zone,'export_qty': acetone_export_zone}],'other':[{'name':'Heavies','qty': heives_other_zone}]}, success: true,message:""}
 
 	end
 	def index
