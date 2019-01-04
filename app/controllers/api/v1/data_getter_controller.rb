@@ -102,12 +102,15 @@ class Api::V1::DataGetterController < ApplicationController
 		cumene_production_oh = Production.where(date: Date.yesterday, parameters: 'oh', product: Product.where(name: 'Cumene')).sum(:value).round(2)
 		cumene_production_or = Production.where(date: Date.yesterday, parameters: 'or', product: Product.where(name: 'Cumene')).sum(:value).round(2)
 
-		aws_production_other = Production.where(date: Date.yesterday, product: Product.where(name: 'AMS', production_product_type: 'other')).sum(:value).round(2)
+		ams_production_other = Production.where(date: Date.yesterday, product: Product.where(name: 'AMS', production_product_type: 'other')).sum(:value).round(2)
 		acetone_production_other = Production.where(date: Date.yesterday, product: Product.where(name: 'Acetone', production_product_type: 'other')).sum(:value).round(2)
-		# benzene_drag_production_other = Production.where(date: Date.yesterday, product: Product.where(name: 'Benzene drag', production_product_type: 'other')).sum(:value).round(2)
+		benzene_drag_production_other = Production.where(date: Date.yesterday, product: Product.where(name: 'Benzene drag', production_product_type: 'other')).sum(:value).round(2)
 
 
-		render json:{data: {'plant':[{'name': 'Phenol',"qty": phenol_production_prd,'operating_rate': phenol_production_or ,'downtime_hours': phenol_production_dh,'onstream_hours': phenol_production_oh },{'name':'Cumene',"qty": cumene_production_prd,'operating_rate': cumene_production_or,'downtime_hours': cumene_production_dh,'onstream_hours': cumene_production_oh}],'other':[{'name': 'Acetone',"qty": acetone_production_other },{'name':'Benzene Drag',"qty": '111.22' },{'name':'AWS',"qty": aws_production_other }]}, success: true,message:""}
+	render json: { data: { 'plant': [{ 'name': 'Phenol', "qty": phenol_production_prd, 'operating_rate': phenol_production_or, 'downtime_hours': phenol_production_dh, 'onstream_hours': phenol_production_oh }, { 'name': 'Cumene', "qty": cumene_production_prd, 'operating_rate': cumene_production_or, 'downtime_hours': cumene_production_dh, 'onstream_hours': cumene_production_oh }],
+                       'other': [{ 'name': 'Acetone', 'qty': acetone_production_other }, { 'name': 'Benzene Drag', 'qty': benzene_drag_production_other },
+                                 { 'name': 'AMS', 'qty': ams_production_other }] }, success: true, message: '' }
+
 
 	end
 	def sales
