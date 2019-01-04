@@ -149,7 +149,7 @@ class Api::V1::DataGetterController < ApplicationController
 		heives_other_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Heavies']),region: 'other').sum(:metric_tons).round(2)
 
 		render json:{data: {'zone': [{ 'name': 'Phenol', "qty" : sales_phenol, 'north_qty' : phenol_north_zone, 'west_qty' : phenol_west_zone, 'south_qty' : phenol_south_zone, 'east_qty' : phenol_east_zone, 'central_qty' : phenol_central_zone, 'export_qty' : phenol_export_zone},{'name' : 'Acetone','qty' : sales_acetone, 'north_qty' : acetone_north_zone, 'west_qty' : acetone_west_zone,
-			 'south_qty' : acetone_south_zone, 'east_qty' : acetone_east_zone, 'central_qty' : acetone_east_zone, 'export_qty' : acetone_export_zone}],'other':[{'name' : 'Heavies', 'qty' : heives_other_zone}]}, success: true,message:""}
+			 'south_qty' : acetone_south_zone, 'east_qty' : acetone_east_zone, 'central_qty' : acetone_central_zone, 'export_qty' : acetone_export_zone}],'other':[{'name' : 'Heavies', 'qty' : heives_other_zone}]}, success: true, message:""}
 
 	end
 	def index
