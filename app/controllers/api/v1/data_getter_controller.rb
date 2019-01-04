@@ -5,7 +5,7 @@ class Api::V1::DataGetterController < ApplicationController
 	MT=10000
 
 	def homedata
-		aday = 1.day.ago
+		aday = Date.today
 		sales_start = 1.day.ago
 		today = 1.day.ago
 		if today.day<8
