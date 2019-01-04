@@ -21,6 +21,9 @@ class WelcomeController < ApplicationController
     inbound_benzene_tt = Inbound.where(date: Date.yesterday,product:Product.where(name:'Benzene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
     inbound_propylene_tt = Inbound.where(date: Date.yesterday,product:Product.where(name:'Propylene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
 
+    @North_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Phenol','Hydrated Phenol']),region: 'North').sum(:metric_tons).round(2)
+
+
     @beginning_of_week = @today.beginning_of_week
     @end_of_month = Date.today.end_of_week
     aday = day_range(Date.yesterday)
