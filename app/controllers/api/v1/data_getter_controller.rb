@@ -1,4 +1,3 @@
-
 class Api::V1::DataGetterController < ApplicationController
 	include ApplicationHelper
 	protect_from_forgery with: :null_session
@@ -93,8 +92,25 @@ class Api::V1::DataGetterController < ApplicationController
 
 		sales_end = sales_start + 7.days
 
+		phenol_production_prd = Production.where(date: Date.yesterday, parameters: 'prd', product: Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
+		phenol_production_dh = Production.where(date: Date.yesterday, parameters: 'dh', product: Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
+		phenol_production_oh = Production.where(date: Date.yesterday, parameters: 'oh', product: Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
+		phenol_production_or = Production.where(date: Date.yesterday, parameters: 'or', product: Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
 
-		render json:{data: {'plant':[{'name':'Phenol',"qty":2588.54,'operating_rate':88.21,'downtime_hours':0.00,'onstream_hours':168.00},{'name':'Cumene',"qty":3296.9282,'operating_rate':0.00,'downtime_hours':0.00,'onstream_hours':0.00}],'other':[{'name':'Acetone',"qty":1557.98},{'name':'Benzene Drag',"qty":3077.73},{'name':'AWS',"qty":140.40}]}, success: true,message:""}
+		cumene_production_prd = Production.where(date: Date.yesterday, parameters: 'prd', product: Product.where(name: 'Cumene')).sum(:value).round(2)
+		cumene_production_dh = Production.where(date: Date.yesterday, parameters: 'dh', product: Product.where(name: 'Cumene')).sum(:value).round(2)
+		cumene_production_oh = Production.where(date: Date.yesterday, parameters: 'oh', product: Product.where(name: 'Cumene')).sum(:value).round(2)
+		cumene_production_or = Production.where(date: Date.yesterday, parameters: 'or', product: Product.where(name: 'Cumene')).sum(:value).round(2)
+
+		ams_production_other = Production.where(date: Date.yesterday, product: Product.where(name: 'AMS', production_product_type: 'other')).sum(:value).round(2)
+		acetone_production_other = Production.where(date: Date.yesterday, product: Product.where(name: 'Acetone', production_product_type: 'other')).sum(:value).round(2)
+		benzene_drag_production_other = Production.where(date: Date.yesterday, product: Product.where(name: 'Benzene drag', production_product_type: 'other')).sum(:value).round(2)
+
+
+	render json: { data: { 'plant': [{ 'name': 'Phenol', "qty": phenol_production_prd, 'operating_rate': phenol_production_or, 'downtime_hours': phenol_production_dh, 'onstream_hours': phenol_production_oh }, { 'name': 'Cumene', "qty": cumene_production_prd, 'operating_rate': cumene_production_or, 'downtime_hours': cumene_production_dh, 'onstream_hours': cumene_production_oh }],
+                       'other': [{ 'name': 'Acetone', 'qty': acetone_production_other }, { 'name': 'Benzene Drag', 'qty': benzene_drag_production_other },
+                                 { 'name': 'AMS', 'qty': ams_production_other }] }, success: true, message: '' }
+
 
 	end
 	def sales
@@ -113,12 +129,27 @@ class Api::V1::DataGetterController < ApplicationController
 
 		sales_end = sales_start + 7.days
 
-		sales_phenol = 	SalesOutbound.where(date:sales_start..sales_end,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:metric_tons).round(2)
-		sales_acetone = 	SalesOutbound.where(date:sales_start..sales_end,product:Product.where(name:'Acetone')).sum(:metric_tons).round(2)
+		sales_phenol = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'), product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:metric_tons).round(2)
+		sales_acetone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'), product:Product.where(name:'Acetone')).sum(:metric_tons).round(2)
 
 		phenol_north_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Phenol','Hydrated Phenol']),region: 'North').sum(:metric_tons).round(2)
+		phenol_west_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Phenol','Hydrated Phenol']),region: 'West').sum(:metric_tons).round(2)
+		phenol_south_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Phenol','Hydrated Phenol']),region: 'South').sum(:metric_tons).round(2)
+		phenol_east_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Phenol','Hydrated Phenol']),region: 'East').sum(:metric_tons).round(2)
+		phenol_central_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Phenol','Hydrated Phenol']),region: 'Central').sum(:metric_tons).round(2)
+		phenol_export_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Phenol','Hydrated Phenol']),region: 'Export').sum(:metric_tons).round(2)
 
-		render json:{data: {'zone':[{'name':'Phenol','qty':sales_phenol,'north_qty': phenol_north_zone ,'west_qty':'777.14','south_qty':'0.00','east_qty':'196.14','central_qty':'3000.05','export_qty':'0.00'},{'name':'Acetone','qty':sales_acetone,'north_qty':'358.6','west_qty':'974.60','south_qty':'1249.8','east_qty':'00.00','central_qty':'3232.22','export_qty':'00.00'}],'other':[{'name':'Heavies','qty':'0.00'}]}, success: true,message:""}
+		acetone_north_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name: 'Acetone'),region: 'North').sum(:metric_tons).round(2)
+		acetone_west_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name: 'Acetone' ),region: 'West').sum(:metric_tons).round(2)
+		acetone_south_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name: 'Acetone' ),region: 'South').sum(:metric_tons).round(2)
+		acetone_east_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name: 'Acetone' ),region: 'East').sum(:metric_tons).round(2)
+		acetone_central_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name: 'Acetone' ),region: 'Central').sum(:metric_tons).round(2)
+		acetone_export_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name: 'Acetone' ),region: 'Export').sum(:metric_tons).round(2)
+
+		heives_other_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Heavies']),region: 'other').sum(:metric_tons).round(2)
+
+		render json:{data: {'zone': [{ 'name': 'Phenol', "qty" : sales_phenol, 'north_qty' : phenol_north_zone, 'west_qty' : phenol_west_zone, 'south_qty' : phenol_south_zone, 'east_qty' : phenol_east_zone, 'central_qty' : phenol_central_zone, 'export_qty' : phenol_export_zone},{'name' : 'Acetone','qty' : sales_acetone, 'north_qty' : acetone_north_zone, 'west_qty' : acetone_west_zone,
+			 'south_qty' : acetone_south_zone, 'east_qty' : acetone_east_zone, 'central_qty' : acetone_east_zone, 'export_qty' : acetone_export_zone}],'other':[{'name' : 'Heavies', 'qty' : heives_other_zone}]}, success: true,message:""}
 
 	end
 	def index
@@ -173,7 +204,7 @@ class Api::V1::DataGetterController < ApplicationController
 		  render json: @stock, status: :created, location: api_v1_data_getter_index_url(@stock)
         else
           render json: @stock.errors
-	  end
+	    end
 	end
 
 	def get_stock_data_product_wise
