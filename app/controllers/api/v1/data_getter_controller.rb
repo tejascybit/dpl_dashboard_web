@@ -68,7 +68,13 @@ class Api::V1::DataGetterController < ApplicationController
 		inventory_acetone= Inventory.where(date: Date.today,product:Product.where(name:'Acetone')).sum(:value).round(2)
 		inventory_propylene= Inventory.where(date: Date.today,product:Product.where(name:'Propylene')).sum(:value).round(2)
 		inventory_cumene= Inventory.where(date: Date.today,product:Product.where(name:'Cumene')).sum(:value).round(2)
-		render json:{data: {'overall':[{'name':'Phenol',"qty":inventory_phenol},{'name':'Acetone',"qty":inventory_acetone},{'name':'Propylene',"qty":inventory_propylene},{'name':'Cumene',"qty":inventory_cumene}],'tankwise':[{'name':'Phenole Rundown tank 1',"qty":251.862,'level':68.32},{'name':'Phenole Rundown tank 2',"qty":171.091,'level':46.23},{'name':'Hydrated Phenol Rundown tank',"qty":334.986,'level':82.07}]}, success: true,message:""}
+
+
+		render json:{data: {'overall':[{'name':'Phenol',"qty":inventory_phenol},{'name':'Acetone',"qty":inventory_acetone},
+			{'name':'Propylene',"qty":inventory_propylene},{'name':'Cumene',"qty":inventory_cumene}],
+			'tankwise':[{'name':'Phenole Rundown tank 1',"qty":251.862,'level':68.32},
+				{'name':'Phenole Rundown tank 2',"qty":171.091,'level':46.23},
+				{'name':'Hydrated Phenol Rundown tank',"qty":334.986,'level':82.07}]}, success: true,message:""}
 	end
 	def production
 		aday = 1.day.ago
@@ -108,7 +114,11 @@ class Api::V1::DataGetterController < ApplicationController
 
 		sales_phenol = 	SalesOutbound.where(date:sales_start..sales_end,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:metric_tons).round(2)
 		sales_acetone = 	SalesOutbound.where(date:sales_start..sales_end,product:Product.where(name:'Acetone')).sum(:metric_tons).round(2)
-		render json:{data: {'zone':[{'name':'Phenol','qty':sales_phenol,'north_qty':'497.34','west_qty':'777.14','south_qty':'0.00','east_qty':'196.14','central_qty':'3000.05','export_qty':'0.00'},{'name':'Acetone','qty':sales_acetone,'north_qty':'358.6','west_qty':'974.60','south_qty':'1249.8','east_qty':'00.00','central_qty':'3232.22','export_qty':'00.00'}],'other':[{'name':'Heavies','qty':'0.00'}]}, success: true,message:""}
+
+		phenol_north_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Phenol','Hydrated Phenol']),region: 'North').sum(:metric_tons).round(2)
+
+
+		render json:{data: {'zone':[{'name':'Phenol','qty':sales_phenol,'north_qty': phenol_north_zone ,'west_qty':'777.14','south_qty':'0.00','east_qty':'196.14','central_qty':'3000.05','export_qty':'0.00'},{'name':'Acetone','qty':sales_acetone,'north_qty':'358.6','west_qty':'974.60','south_qty':'1249.8','east_qty':'00.00','central_qty':'3232.22','export_qty':'00.00'}],'other':[{'name':'Heavies','qty':'0.00'}]}, success: true,message:""}
 
 	end
 	def index
