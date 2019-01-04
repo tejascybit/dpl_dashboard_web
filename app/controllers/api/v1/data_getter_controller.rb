@@ -92,8 +92,22 @@ class Api::V1::DataGetterController < ApplicationController
 
 		sales_end = sales_start + 7.days
 
+		phenol_production_prd = Production.where(date: Date.yesterday, parameters: 'prd', product: Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
+		phenol_production_dh = Production.where(date: Date.yesterday, parameters: 'dh', product: Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
+		phenol_production_oh = Production.where(date: Date.yesterday, parameters: 'oh', product: Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
+		phenol_production_or = Production.where(date: Date.yesterday, parameters: 'or', product: Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
 
-		render json:{data: {'plant':[{'name': 'Phenol',"qty": 2588.54,'operating_rate':88.21,'downtime_hours':0.00,'onstream_hours':168.00},{'name':'Cumene',"qty":3296.9282,'operating_rate':0.00,'downtime_hours':0.00,'onstream_hours':0.00}],'other':[{'name':'Acetone',"qty":1557.98},{'name':'Benzene Drag',"qty":3077.73},{'name':'AWS',"qty":140.40}]}, success: true,message:""}
+		cumene_production_prd = Production.where(date: Date.yesterday, parameters: 'prd', product: Product.where(name: 'Cumene')).sum(:value).round(2)
+		cumene_production_dh = Production.where(date: Date.yesterday, parameters: 'dh', product: Product.where(name: 'Cumene')).sum(:value).round(2)
+		cumene_production_oh = Production.where(date: Date.yesterday, parameters: 'oh', product: Product.where(name: 'Cumene')).sum(:value).round(2)
+		cumene_production_or = Production.where(date: Date.yesterday, parameters: 'or', product: Product.where(name: 'Cumene')).sum(:value).round(2)
+
+		aws_production_other = Production.where(date: Date.yesterday, product: Product.where(name: 'AMS', production_product_type: 'other')).sum(:value).round(2)
+		acetone_production_other = Production.where(date: Date.yesterday, product: Product.where(name: 'Acetone', production_product_type: 'other')).sum(:value).round(2)
+		benzene_drag_production_other = Production.where(date: Date.yesterday, product: Product.where(name: 'Benzene drag', production_product_type: 'other')).sum(:value).round(2)
+
+
+		render json:{data: {'plant':[{'name': 'Phenol',"qty": phenol_production_prd,'operating_rate': phenol_production_or ,'downtime_hours': phenol_production_dh,'onstream_hours': phenol_production_oh },{'name':'Cumene',"qty": cumene_production_prd,'operating_rate': cumene_production_or,'downtime_hours': cumene_production_dh,'onstream_hours': cumene_production_oh}],'other':[{'name': 'Acetone',"qty": acetone_production_other },{'name':'Benzene Drag',"qty": benzene_drag_production_other },{'name':'AWS',"qty": aws_production_other }]}, success: true,message:""}
 
 	end
 	def sales
