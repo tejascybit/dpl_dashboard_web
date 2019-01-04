@@ -118,7 +118,6 @@ class Api::V1::DataGetterController < ApplicationController
 
 		phenol_north_zone = 	SalesOutbound.where(date: Date.yesterday.strftime('%d-%m-%Y'),product:Product.where(name:['Phenol','Hydrated Phenol']),region: 'North').sum(:metric_tons).round(2)
 
-
 		render json:{data: {'zone':[{'name':'Phenol','qty':sales_phenol,'north_qty': phenol_north_zone ,'west_qty':'777.14','south_qty':'0.00','east_qty':'196.14','central_qty':'3000.05','export_qty':'0.00'},{'name':'Acetone','qty':sales_acetone,'north_qty':'358.6','west_qty':'974.60','south_qty':'1249.8','east_qty':'00.00','central_qty':'3232.22','export_qty':'00.00'}],'other':[{'name':'Heavies','qty':'0.00'}]}, success: true,message:""}
 
 	end
@@ -174,7 +173,7 @@ class Api::V1::DataGetterController < ApplicationController
 		  render json: @stock, status: :created, location: api_v1_data_getter_index_url(@stock)
         else
           render json: @stock.errors
-	    end
+	  end
 	end
 
 	def get_stock_data_product_wise

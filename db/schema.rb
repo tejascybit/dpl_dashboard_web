@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_03_101948) do
+ActiveRecord::Schema.define(version: 2019_01_04_092651) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -85,6 +85,7 @@ ActiveRecord::Schema.define(version: 2019_01_03_101948) do
     t.string "product_capacity"
     t.boolean "product_in_production", default: false
     t.string "production_product_type", default: "other"
+    t.string "product_code"
   end
 
   create_table "sales_outbounds", force: :cascade do |t|
