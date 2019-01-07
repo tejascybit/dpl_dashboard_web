@@ -5,21 +5,7 @@ class Api::V1::DataGetterController < ApplicationController
 	MT=10000
 
 	def homedata
-		aday = params[:date].to_date
-		sales_start = aday
-		today = aday
-		if today.day<8
-			sales_start = Date.new(today.year,today.month,1)
-		elsif today.day%7 == 0
-			sales_start = 6.days.ago
-		else
-			a = []
-			(1..today.day).each{|x| if x%7 == 0 then a.push(x) end}
-			sales_start = Date.new(today.year,today.month,(a.last+1))
-		end
-
-		sales_end = sales_start + 6.days
-binding.pry
+		aday = day_range(params[:date].to_date)
 		inventory_phenol= Inventory.where(date: aday,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
 		inventory_benzene= Inventory.where(date: aday,product:Product.where(name:'Benzene')).sum(:value).round(2)
 		inventory_acetone= Inventory.where(date: aday,product:Product.where(name:'Acetone')).sum(:value).round(2)
