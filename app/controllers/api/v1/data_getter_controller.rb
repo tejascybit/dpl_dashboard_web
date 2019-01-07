@@ -5,7 +5,8 @@ class Api::V1::DataGetterController < ApplicationController
 	MT=10000
 
 	def homedata
-		aday = params[:date]
+		params[:date] = '07-01-2019'
+		aday = params[:date].to_date
 		sales_start = 1.day.ago
 		today = 1.day.ago
 		if today.day<8
@@ -33,7 +34,7 @@ binding.pry
 		production_phenol_plan = ProductionPlan.where(date: aday-1.day,product:Product.where(name:'Phenol')).sum(:value).round(2)
 		production_per = ((production_phenol) * 100/(production_phenol_plan)).round(1)
 
-		inbound_coal_mt = Inbound.where(date: aday-1.day.strftime('%d-%m-%Y'),product:Product.where(name:'Coal'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
+		inbound_coal_mt = Inbound.where(date: aday-1.day,product:Product.where(name:'Coal'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
 		inbound_cumene_mt = Inbound.where(date: aday-1.day,product:Product.where(name:'Cumene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
 		inbound_benzene_mt = Inbound.where(date: aday-1.day,product:Product.where(name:'Benzene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
 		inbound_propylene_mt = Inbound.where(date: aday-1.day,product:Product.where(name:'Propylene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
