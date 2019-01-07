@@ -5,7 +5,6 @@ class Api::V1::DataGetterController < ApplicationController
 	MT=10000
 
 	def homedata
-		params[:date] = '07-01-2019'
 		aday = params[:date].to_date
 		sales_start = 1.day.ago
 		today = 1.day.ago
