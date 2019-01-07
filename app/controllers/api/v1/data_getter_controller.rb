@@ -55,6 +55,41 @@ class Api::V1::DataGetterController < ApplicationController
 				{'name':'Phenole Rundown tank 2',"qty":171.091,'level':46.23},
 				{'name':'Hydrated Phenol Rundown tank',"qty":334.986,'level':82.07}]}, success: true,message:""}
 	end
+	def inventory_tank
+		invet_list=[]
+		p = Product.where("name = ?",params[:name]).last
+
+					p.tanks.each do |t|
+						invet = {}
+						binding.pry
+						tank_total = 	Inventory.where(date: @today,product_id: p.id, tank_id: t.id).sum(:value).round(2)
+						tank_level = 	Inventory.where(date: @today,product_id: p.id,tank_id: t.id).average(:tank_level)
+						invet['tank_name'] = t.name
+						invet['tank_total'] = tank_total
+						invet['tank_level'] = tank_level
+						invet_list.push(invet)
+					end
+
+
+
+
+			render json:{data: invet_list.to_json, success: true, message: ''}
+		#
+		# inventory_phenol= Inventory.where(date: @today,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
+		# inventory_benzene= Inventory.where(date: @today,product:Product.where(name:'Benzene')).sum(:value).round(2)
+		# inventory_acetone= Inventory.where(date: @today,product:Product.where(name:'Acetone')).sum(:value).round(2)
+		# inventory_propylene= Inventory.where(date: @today,product:Product.where(name:'Propylene')).sum(:value).round(2)
+		# inventory_cumene= Inventory.where(date: @today,product:Product.where(name:'Cumene')).sum(:value).round(2)
+		#
+		# tank_level = Tank.where(date: @today,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
+
+
+	# 	render json:{data: {'overall':[{'name':'Phenol',"qty":inventory_phenol},{'name':'Acetone',"qty":inventory_acetone},
+	# 		{'name':'Propylene',"qty":inventory_propylene},{'name':'Cumene',"qty":inventory_cumene}],
+	# 		'tankwise':[{'name':'Phenole Rundown tank 1',"qty":251.862,'level':68.32},
+	# 			{'name':'Phenole Rundown tank 2',"qty":171.091,'level':46.23},
+	# 			{'name':'Hydrated Phenol Rundown tank',"qty":334.986,'level':82.07}]}, success: true,message:""}
+end
 	def production
 		phenol_production_prd = Production.where(date: @yesterday, parameters: 'prd', product: Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
 		phenol_production_dh = Production.where(date: @yesterday, parameters: 'dh', product: Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
