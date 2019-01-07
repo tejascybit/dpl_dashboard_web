@@ -12,7 +12,6 @@ class Api::V1::DataGetterController < ApplicationController
 		end
 	end
 	def homedata
-		binding.pry
 		inventory_phenol= Inventory.where(date: @today,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
 		inventory_benzene= Inventory.where(date: @today,product:Product.where(name:'Benzene')).sum(:value).round(2)
 		inventory_acetone= Inventory.where(date: @today,product:Product.where(name:'Acetone')).sum(:value).round(2)
@@ -36,7 +35,7 @@ class Api::V1::DataGetterController < ApplicationController
 		inbound_benzene_tt = Inbound.where(date: @yesterday,product:Product.where(name:'Benzene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:total_tons).round(2)
 		inbound_propylene_tt = Inbound.where(date: @yesterday,product:Product.where(name:'Propylene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:total_tons).round(2)
 
-		render json:{data: { 'inventory_phenol': inventory_phenol, 'inventory_benzene': inventory_benzene, 'inventory_acetone': inventory_acetone, 'inventory_propylene': inventory_propylene, 'inventory_cumene': inventory_cumene, 'inventory_ams': inventory_ams, 'sales_phenol': sales_phenol, 'sales_acetone': sales_acetone, 'production_last_update': Date.today.to_s(:long), 'sales_last_update': Date.today.to_s(:long), 'production_phenol_total': production_phenol, 'production_phenol_plan': production_phenol_plan, 'production_per': production_per, 'production_progress': 'warning', 'inbound_cumene_mt_tt': (inbound_cumene_mt.to_s + " MT [" + inbound_cumene_tt.to_s + " TT]"), 'inbound_coal_mt_tt': (inbound_coal_mt.to_s + " MT [" + inbound_coal_tt.to_s + " TT]"), 'inbound_benzene_mt_tt': (inbound_benzene_mt.to_s + " MT [" + inbound_benzene_tt.to_s + " TT]"), 'inbound_prpylene_mt_tt': (inbound_propylene_mt.to_s + " MT [" + inbound_propylene_tt.to_s + " TT]") }, success: true, message: ""}
+		render json:{data: { 'inventory_phenol': inventory_phenol, 'inventory_benzene': inventory_benzene, 'inventory_acetone': inventory_acetone, 'inventory_propylene': inventory_propylene, 'inventory_cumene': inventory_cumene, 'inventory_ams': inventory_ams, 'sales_phenol': sales_phenol, 'sales_acetone': sales_acetone, 'production_last_update': @yesterday, 'sales_last_update': @yesterday, 'production_phenol_total': production_phenol, 'production_phenol_plan': production_phenol_plan, 'production_per': production_per, 'production_progress': 'warning', 'inbound_cumene_mt_tt': (inbound_cumene_mt.to_s + " MT [" + inbound_cumene_tt.to_s + " TT]"), 'inbound_coal_mt_tt': (inbound_coal_mt.to_s + " MT [" + inbound_coal_tt.to_s + " TT]"), 'inbound_benzene_mt_tt': (inbound_benzene_mt.to_s + " MT [" + inbound_benzene_tt.to_s + " TT]"), 'inbound_prpylene_mt_tt': (inbound_propylene_mt.to_s + " MT [" + inbound_propylene_tt.to_s + " TT]") }, success: true, message: ""}
 
 	end
 
