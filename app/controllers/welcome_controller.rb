@@ -100,33 +100,6 @@ def getting_inventory_data
   end
 end
 
-#
-# def all_inventory
-#   if !params[:track_mode].present?
-#     @month = params[:track_mode]
-#   else
-#     params[:track_mode] = 'Monthly'
-#   end
-#
-#   @beginning_of_week = @today.beginning_of_week
-#   @end_of_month = Date.today.end_of_week
-#
-#   final_data = {}
-#   @pro_name = @products.each do |prd|
-#     final_data[prd.name] = {} if final_data[prd.name].blank?
-#     @inventories = prd.inventories.where('date BETWEEN ? AND ?', @beginning_of_week, @today).sum(:value)
-#     final_data[prd.name]['Total'] = (@inventories / MT).round(2)
-#     prd.tanks.each do |tnk|
-#       final_data[prd.name][tnk.name] = {} if final_data[prd.name][tnk.name].blank?
-#       tnk.inventories.each do |inventory|
-#         final_data[prd.name][tnk.name][:date] = inventory.date
-#         final_data[prd.name][tnk.name][:tank_level] = inventory.tank_level
-#         final_data[prd.name][tnk.name][:value] = (inventory.value / MT).round(2)
-#       end
-#     end
-#   end
-# end
-
 def getting_sales_data
   require 'json'
   token = generate_new_token
@@ -188,7 +161,7 @@ def getting_production_data
         token = token['key']
         puts token
       end
-      
+
       url = 'https://dnlapps.dnlpune.com/DPLPlan/MaintenancePlanning?product=' + product.product_code + '&startDate=' + start_date.to_s + '&endDate=' + end_date.to_s + '&productType=' + product.production_product_type + '&capacity=' + product.product_capacity.to_s + '&accessCode=' + token
       puts url
       response = HTTParty.get(url)
@@ -286,7 +259,7 @@ end
     @beginning_of_week = @today.beginning_of_week
     @end_of_month = Date.today.end_of_week
     final_data = {}
-    @prod_name = @products.each do |prd|
+    @prod_name = @products.where('product_in_production = true').each do |prd|
       final_data[prd.name] = {} if final_data[prd.name].blank?
       @productions_qty = prd.productions.where('date BETWEEN ? AND ?', @beginning_of_week, @today).sum(:parameters)
     end
