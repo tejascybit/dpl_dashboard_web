@@ -20,12 +20,12 @@ class Api::V1::DataGetterController < ApplicationController
 
 		sales_end = sales_start + 7.days
 
-		inventory_phenol= Inventory.where(date:aday,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
-		inventory_benzene= Inventory.where(date:aday,product:Product.where(name:'Benzene')).sum(:value).round(2)
-		inventory_acetone= Inventory.where(date:aday,product:Product.where(name:'Acetone')).sum(:value).round(2)
-		inventory_propylene= Inventory.where(date:aday,product:Product.where(name:'Propylene')).sum(:value).round(2)
-		inventory_ams= Inventory.where(date:aday,product:Product.where(name:'AMS')).sum(:value).round(2)
-		inventory_cumene= Inventory.where(date:aday,product:Product.where(name:'Cumene')).sum(:value).round(2)
+		inventory_phenol= Inventory.where(date: params[:date],product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
+		inventory_benzene= Inventory.where(date: params[:date],product:Product.where(name:'Benzene')).sum(:value).round(2)
+		inventory_acetone= Inventory.where(date: params[:date],product:Product.where(name:'Acetone')).sum(:value).round(2)
+		inventory_propylene= Inventory.where(date: params[:date],product:Product.where(name:'Propylene')).sum(:value).round(2)
+		inventory_ams= Inventory.where(date: params[:date],product:Product.where(name:'AMS')).sum(:value).round(2)
+		inventory_cumene= Inventory.where(date: params[:date],product:Product.where(name:'Cumene')).sum(:value).round(2)
 	  sales_phenol = 	SalesOutbound.where(date:sales_start..sales_end,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:metric_tons).round(2)
 		sales_acetone = 	SalesOutbound.where(date:sales_start..sales_end,product:Product.where(name:'Acetone')).sum(:metric_tons).round(2)
 
