@@ -19,7 +19,7 @@ class Api::V1::DataGetterController < ApplicationController
 		end
 
 		sales_end = sales_start + 7.days
-
+binding.pry
 		inventory_phenol= Inventory.where(date:aday,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
 		inventory_benzene= Inventory.where(date:aday,product:Product.where(name:'Benzene')).sum(:value).round(2)
 		inventory_acetone= Inventory.where(date:aday,product:Product.where(name:'Acetone')).sum(:value).round(2)
@@ -39,7 +39,7 @@ class Api::V1::DataGetterController < ApplicationController
 		inbound_propylene_mt = Inbound.where(date: aday.1.day.ago,product:Product.where(name:'Propylene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
 
 		inbound_coal_tt = Inbound.where(date: aday.1.day.ago,product:Product.where(name:'Coal'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:total_tons).round(2)
-		inbound_cumene_tt = Inbound.where(date: aday.1.day.ago1.day.ago,product:Product.where(name:'Cumene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:total_tons).round(2)
+		inbound_cumene_tt = Inbound.where(date: aday.1.day.ago,product:Product.where(name:'Cumene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:total_tons).round(2)
 		inbound_benzene_tt = Inbound.where(date: aday.1.day.ago,product:Product.where(name:'Benzene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:total_tons).round(2)
 		inbound_propylene_tt = Inbound.where(date: aday.1.day.ago,product:Product.where(name:'Propylene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:total_tons).round(2)
 
