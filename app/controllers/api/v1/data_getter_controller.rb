@@ -58,8 +58,12 @@ class Api::V1::DataGetterController < ApplicationController
 	end
 	def inventory_tank
 		invet_list=[]
-		p = Product.where("name = ?",params[:name]).last
-
+		if(params[:name] == 'Phenol')
+			prod = Product.where(name:['Phenol','Hydrated Phenol'])
+		else
+			prod = Product.where("name = ?",params[:name])
+		end
+				prod.each do |p|
 					p.tanks.each do |t|
 						invet = {}
 						tank_total = 	Inventory.where(date: @today,product_id: p.id, tank_id: t.id).sum(:value).round(2)
@@ -69,6 +73,7 @@ class Api::V1::DataGetterController < ApplicationController
 						invet['tank_level'] = tank_level
 						invet_list.push(invet)
 					end
+				end
 
 
 
