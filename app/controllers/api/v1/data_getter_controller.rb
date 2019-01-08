@@ -1,8 +1,8 @@
 class Api::V1::DataGetterController < ApplicationController
 	include ApplicationHelper
 	protect_from_forgery with: :null_session
-	before_action :get_date, only: [:homedata, :inventory, :production, :sales, :index, :get_stock_data_product_wise ]
-	before_action :get_today, only: [:homedata, :inventory, :production, :sales, :index, :get_stock_data_product_wise ]
+	before_action :get_date, only: [:inventory_tank, :homedata, :inventory, :production, :sales, :index, :get_stock_data_product_wise ]
+	before_action :get_today, only: [:inventory_tank, :homedata, :inventory, :production, :sales, :index, :get_stock_data_product_wise ]
 
 	def index
 		@response = HTTParty.get("http://172.16.16.96:8081/DPLPlan/OpeningInventory?tankNumber=10-T-5101A&startDate=01-12-2018&endDate=07-12-2018&accessCode=CYBITTEST").parsed_response
@@ -60,7 +60,7 @@ class Api::V1::DataGetterController < ApplicationController
 		p = Product.where("name = ?",params[:name]).last
 
 					p.tanks.each do |t|
-						invet = {}
+						invet = []
 						tank_total = 	Inventory.where(date: @today,product_id: p.id, tank_id: t.id).sum(:value).round(2)
 						tank_level = 	Inventory.where(date: @today,product_id: p.id,tank_id: t.id).average(:tank_level)
 						invet['tank_name'] = t.name
