@@ -22,7 +22,7 @@ class Api::V1::DataGetterController < ApplicationController
 	  sales_phenol = 	SalesOutbound.where(date: @aday.first..@aday.last,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:metric_tons).round(2)
 		sales_acetone = 	SalesOutbound.where(date: @aday.first..@aday.last,product:Product.where(name:'Acetone')).sum(:metric_tons).round(2)
 
-		production_phenol =  Production.where(date: @yesterday,parameters: 'prd',product:Product.where(name:'Phenol')).sum(:value).round(2)
+		production_phenol =  Production.where(date: @aday.first..@aday.last,parameters: 'prd',product:Product.where(name:'Phenol')).sum(:value).round(2)
 		production_phenol_plan = ProductionPlan.where(date: @yesterday,product:Product.where(name:'Phenol')).sum(:value).round(2)
 		production_per = ((production_phenol) * 100/(production_phenol_plan)).round(1)
 
