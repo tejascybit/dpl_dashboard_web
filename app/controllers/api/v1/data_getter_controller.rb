@@ -112,12 +112,14 @@ end
 
 	end
 	def sales
-		sales_phenol = 	SalesOutbound.where(date: @yesterday, product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:metric_tons).round(2)
-		sales_acetone = 	SalesOutbound.where(date: @yesterday, product:Product.where(name:'Acetone')).sum(:metric_tons).round(2)
-		hydrated_phenol_tt = 	SalesOutbound.where(date: @yesterday,product:Product.where(name:['Hydrated Phenol'])).sum(:metric_tons).round(2)
-		phenol_tt = 	SalesOutbound.where(date: @yesterday,product:Product.where(name:['Phenol'])).sum(:metric_tons).round(2)
-
-		render json:{data: {'zone': [{ 'name': 'Phenol', 'qty': sales_phenol, 'hydrated_tankers': hydrated_phenol_tt, 'molten': phenol_tt},
+		@aday = day_range(@yesterday)
+		sales_phenol = 	SalesOutbound.where(date: @aday.first..@aday.last, product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:metric_tons).round(2)
+		sales_acetone = 	SalesOutbound.where(date: @aday.first..@aday.last, product:Product.where(name:'Acetone')).sum(:metric_tons).round(2)
+		hydrated_phenol_tt = 	SalesOutbound.where(date: @aday.first..@aday.last, product:Product.where(name:['Hydrated Phenol'])).sum(:metric_tons).round(2)
+		phenol_tt = 	SalesOutbound.where(date: @aday.first..@aday.last, product:Product.where(name:['Phenol'])).sum(:metric_tons).round(2)
+		production_from = @aday.first.to_s(:long)
+    production_to	= @aday.last.to_s(:long)
+		render json:{data: {'production_from': production_from, 'production_to': production_to,'zone': [{ 'name': 'Phenol', 'qty': sales_phenol, 'hydrated_tankers': hydrated_phenol_tt, 'molten': phenol_tt},
 			                           { 'name': 'Acetone', 'qty': sales_acetone}]}, success: true, message: ""}
 
 	end
