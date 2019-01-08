@@ -12,6 +12,7 @@ class Api::V1::DataGetterController < ApplicationController
 		end
 	end
 	def homedata
+		@aday = day_range(@yesterday)
 		inventory_phenol= Inventory.where(date: @today,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
 		inventory_benzene= Inventory.where(date: @today,product:Product.where(name:'Benzene')).sum(:value).round(2)
 		inventory_acetone= Inventory.where(date: @today,product:Product.where(name:'Acetone')).sum(:value).round(2)
