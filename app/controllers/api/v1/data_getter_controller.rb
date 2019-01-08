@@ -61,7 +61,6 @@ class Api::V1::DataGetterController < ApplicationController
 
 					p.tanks.each do |t|
 						invet = {}
-						binding.pry
 						tank_total = 	Inventory.where(date: @today,product_id: p.id, tank_id: t.id).sum(:value).round(2)
 						tank_level = 	Inventory.where(date: @today,product_id: p.id,tank_id: t.id).average(:tank_level)
 						invet['tank_name'] = t.name
@@ -73,7 +72,7 @@ class Api::V1::DataGetterController < ApplicationController
 
 
 
-			render json:{data: invet_list.to_json, success: true, message: ''}
+			render json:{data: invet_list, success: true, message: ''}
 		#
 		# inventory_phenol= Inventory.where(date: @today,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
 		# inventory_benzene= Inventory.where(date: @today,product:Product.where(name:'Benzene')).sum(:value).round(2)
