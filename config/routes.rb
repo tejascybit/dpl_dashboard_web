@@ -20,6 +20,7 @@ Rails.application.routes.draw do
       resources :data_getter
       get 'homedata' => 'data_getter#homedata'
       get 'inventory' => 'data_getter#inventory'
+      get 'inventory_tank' => 'data_getter#inventory_tank'
       get 'production' => 'data_getter#production'
       get 'sales' => 'data_getter#sales'
       get 'open_stock' => 'data_getter#open_stock'

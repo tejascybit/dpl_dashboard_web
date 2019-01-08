@@ -22,6 +22,9 @@ module ApplicationHelper
   def get_product_zone
     zone = %w[North East West South Central Export]
   end
+  def get_product_with_level
+    @pro = %w[Acetone Cumene Propylene ,Phenol ]
+  end
 
   def day_range(aday)
     sales_start = aday
