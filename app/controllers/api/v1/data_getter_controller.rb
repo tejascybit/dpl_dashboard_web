@@ -103,6 +103,7 @@ end
 
 		cumene_production_prd = Production.where(date: @aday.first..@aday.last, parameters: 'prd', product: Product.where(name: 'Cumene')).sum(:value).round(2)
 		cumene_production_or = Production.where(date: @aday.first..@aday.last, parameters: 'or', product: Product.where(name: 'Cumene')).average(:value).round(2)
+		cumene_production_mtd = Production.where(date:@yesterday.at_beginning_of_month..@aday.last, parameters: 'prd', product: Product.where(name:'Cumene')).sum(:value).round(2)
 
 		ams_production_other = Production.where(date: @yesterday, product: Product.where(name: 'AMS', production_product_type: 'other')).sum(:value).round(2)
 		acetone_production_other = Production.where(date: @yesterday, product: Product.where(name: 'Acetone', production_product_type: 'other')).sum(:value).round(2)
@@ -111,7 +112,7 @@ end
 		production_from = @aday.first.to_s(:long)
     production_to	= @aday.last.to_s(:long)
 
-	render json: { data: {'production_from': production_from, 'production_to': production_to, 'plant': [{ 'name': 'Phenol', "qty": phenol_production_prd, 'operating_rate': phenol_production_or, 'downtime_hours': phenol_production_dh, 'onstream_hours': phenol_production_oh }, { 'name': 'Cumene', "qty": cumene_production_prd, 'operating_rate': cumene_production_or, 'downtime_hours': cumene_production_dh, 'onstream_hours': cumene_production_oh }],
+	render json: { data: {'production_from': production_from, 'production_to': production_to, 'plant': [{ 'name': 'Phenol', "qty": phenol_production_prd, 'operating_rate': phenol_production_or, 'downtime_hours': phenol_production_mtd, 'onstream_hours': phenol_production_oh}, { 'name': 'Cumene', "qty": cumene_production_prd, 'operating_rate': cumene_production_or, 'downtime_hours': cumene_production_mtd, 'onstream_hours': cumene_production_oh }],
                        'other': [{ 'name': 'Acetone', 'qty': acetone_production_other }, { 'name': 'Benzene Drag', 'qty': benzene_drag_production_other },
                                  { 'name': 'AMS', 'qty': ams_production_other }] }, success: true, message: '' }
 
