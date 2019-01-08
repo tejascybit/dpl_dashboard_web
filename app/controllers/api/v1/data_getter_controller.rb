@@ -60,7 +60,7 @@ class Api::V1::DataGetterController < ApplicationController
 		p = Product.where("name = ?",params[:name]).last
 
 					p.tanks.each do |t|
-						invet = []
+						invet = {}
 						tank_total = 	Inventory.where(date: @today,product_id: p.id, tank_id: t.id).sum(:value).round(2)
 						tank_level = 	Inventory.where(date: @today,product_id: p.id,tank_id: t.id).average(:tank_level)
 						invet['tank_name'] = t.name
