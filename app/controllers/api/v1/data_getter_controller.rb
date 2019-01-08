@@ -112,7 +112,7 @@ end
 		production_from = @aday.first.to_s(:long)
     production_to	= @aday.last.to_s(:long)
 
-	render json: { data: {'production_from': production_from, 'production_to': production_to, 'plant': [{ 'name': 'Phenol', "qty": phenol_production_prd, 'operating_rate': phenol_production_or, 'downtime_hours': phenol_production_mtd, 'onstream_hours': phenol_production_oh}, { 'name': 'Cumene', "qty": cumene_production_prd, 'operating_rate': cumene_production_or, 'downtime_hours': cumene_production_mtd, 'onstream_hours': cumene_production_oh }],
+	render json: { data: {'production_from': production_from, 'production_to': production_to, 'plant': [{ 'name': 'Phenol', "qty": phenol_production_prd, 'operating_rate': phenol_production_or, 'downtime_hours': phenol_production_mtd}, { 'name': 'Cumene', "qty": cumene_production_prd, 'operating_rate': cumene_production_or, 'downtime_hours': cumene_production_mtd}],
                        'other': [{ 'name': 'Acetone', 'qty': acetone_production_other }, { 'name': 'Benzene Drag', 'qty': benzene_drag_production_other },
                                  { 'name': 'AMS', 'qty': ams_production_other }] }, success: true, message: '' }
 
