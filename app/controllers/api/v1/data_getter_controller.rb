@@ -24,8 +24,11 @@ class Api::V1::DataGetterController < ApplicationController
 
 		production_phenol =  Production.where(date: @aday.first..@aday.last,parameters: 'prd',product:Product.where(name:'Phenol')).sum(:value).round(2)
 		production_phenol_plan = ProductionPlan.where(date: @yesterday,product:Product.where(name:'Phenol')).sum(:value).round(2)
-		production_per = ((production_phenol) * 100/(production_phenol_plan)).round(1)
-
+		if production_phenol_plan == 0
+			production_per = 100
+		else
+			production_per = ((production_phenol) * 100/(production_phenol_plan)).round(1)
+		end
 		inbound_coal_mt = Inbound.where(date: @yesterday,product:Product.where(name:'Coal'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
 		inbound_cumene_mt = Inbound.where(date: @yesterday,product:Product.where(name:'Cumene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
 		inbound_benzene_mt = Inbound.where(date: @yesterday,product:Product.where(name:'Benzene'),logistic_location:LogisticLocation.where(name:'unloading')).sum(:value).round(2)
