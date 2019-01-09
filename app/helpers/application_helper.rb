@@ -39,6 +39,9 @@ module ApplicationHelper
       sales_start = Date.new(today.year, today.month, (a.last + 1))
     end
     sales_end = sales_start + 6.days
+    if sales_end > sales_start.end_of_month
+      sales_end = sales_start.end_of_month
+    end
     a = [sales_start, sales_end]
   end
 
