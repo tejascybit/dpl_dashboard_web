@@ -62,7 +62,7 @@ class Api::V1::DataGetterController < ApplicationController
 	def inventory_tank
 		invet_list=[]
 		if(params[:name] == 'Phenol')
-			prod = Product.where(name:['Phenol','Hydrated Phenol'])
+			prod = Product.where(name:['Phenol','Hydrated Phenol']).order(id: :desc)
 		else
 			prod = Product.where("name = ?",params[:name])
 		end
