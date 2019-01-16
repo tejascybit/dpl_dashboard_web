@@ -3,15 +3,6 @@ include ApplicationHelper
 
 namespace :importdata do
   desc "TODO"
-  task get_new_access_code: :environment do
-
- end
-
-  desc "TODO"
-  task check_current_access_code: :environment do
-  end
-
-  desc "TODO"
   task get_inventory: :environment do
     start_date = day_range(Date.today).first.strftime('%d-%m-%Y')
     end_date = day_range(Date.today).last.strftime('%d-%m-%Y')
@@ -43,8 +34,10 @@ namespace :importdata do
 
   desc "TODO"
   task get_production: :environment do
-    start_date = day_range(Date.yesterday).first.strftime('%d-%m-%Y')
-    end_date = day_range(Date.yesterday).last.strftime('%d-%m-%Y')
+    d_range = day_range(Date.yesterday)
+    day_diff= ((d_range.last-d_range.first).to_i) + 1
+    start_date = d_range.first.strftime('%d-%m-%Y')
+    end_date = d_range.last.strftime('%d-%m-%Y')
     Product.where('product_in_production = true').each do |product|
       token = AccessCode.last.get_access_code
       url = 'https://dnlapps.dnlpune.com/DPLPlan/MaintenancePlanning?product=' + product.product_code + '&startDate=' + start_date.to_s + '&endDate=' + end_date.to_s + '&productType=' + product.production_product_type + '&capacity=' + product.product_capacity.to_s + '&accessCode=' + token
@@ -66,11 +59,11 @@ namespace :importdata do
               plans = ProductionPlan.new
               plans.date = date.to_date
               plans.product_id = product.id
-              plans.value = @data['data'][dkey]['planned']
+              plans.value = (((@data['data'][dkey]['planned']).to_f)/day_diff)
             end
             plans.date = date.to_date
             plans.product_id = product.id
-            plans.value = @data['data'][dkey]['planned']
+            plans.value = (((@data['data'][dkey]['planned']).to_f)/day_diff)
             plans.save
           end
           if production.blank?
@@ -91,8 +84,9 @@ namespace :importdata do
   desc "TODO"
   task get_sales: :environment do
     require 'json'
-    start_date = day_range(Date.yesterday).first.strftime('%d-%m-%Y')
-    end_date = day_range(Date.yesterday).last.strftime('%d-%m-%Y')
+    d_range = day_range(Date.yesterday)
+    start_date = d_range.first.strftime('%d-%m-%Y')
+    end_date = d_range.last.strftime('%d-%m-%Y')
 
     get_product_zone.each do |pzone|
           Product.where("product_num != '0'").each do |product|
@@ -125,8 +119,9 @@ namespace :importdata do
 
   desc "TODO"
   task get_inbound: :environment do
-    start_date = day_range(Date.yesterday).first.strftime('%d-%m-%Y')
-    end_date = day_range(Date.yesterday).last.strftime('%d-%m-%Y')
+    d_range = day_range(Date.yesterday)
+    start_date = d_range.first.strftime('%d-%m-%Y')
+    end_date = d_range.last.strftime('%d-%m-%Y')
     LogisticLocation.all.each do |location|
       token= AccessCode.last.get_access_code
       url = 'https://dnlapps.dnlpune.com/DPLPlan/sourcingInbound?product=' + location.product.name.downcase.to_s + '&location=' + location.name + '&startDate=' + start_date.to_s + '&endDate=' + end_date.to_s + '&accessCode=' + token
