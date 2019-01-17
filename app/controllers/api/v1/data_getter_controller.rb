@@ -103,6 +103,9 @@ class Api::V1::DataGetterController < ApplicationController
 end
 	def production
 		@aday = day_range(@yesterday)
+		if(params[:track_mode] == 'monthly')
+			@aday = [@yesterday.at_beginning_of_month,@aday.last] 
+		end
 		phenol_production_prd = Production.where(date: @aday.first..@aday.last, parameters: 'prd', product: Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
 		phenol_production_or = Production.where(date: @aday.first..@aday.last, parameters: 'or', product: Product.where(name:['Phenol','Hydrated Phenol'])).average(:value).round(2)
 		phenol_production_mtd = Production.where(date:@yesterday.at_beginning_of_month..@aday.last, parameters: 'prd', product: Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
@@ -126,6 +129,9 @@ end
 	end
 	def sales
 		@aday = day_range(@yesterday)
+		if(params[:track_mode] == 'monthly')
+			@aday = [@yesterday.at_beginning_of_month,@aday.last] 
+		end
 		sales_phenol = 	SalesOutbound.where(date: @aday.first..@aday.last, product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:metric_tons).round(2)
 		sales_acetone = 	SalesOutbound.where(date: @aday.first..@aday.last, product:Product.where(name:'Acetone')).sum(:metric_tons).round(2)
 		hydrated_phenol_tt = 	SalesOutbound.where(date: @aday.first..@aday.last, product:Product.where(name:['Hydrated Phenol'])).sum(:metric_tons).round(2)
