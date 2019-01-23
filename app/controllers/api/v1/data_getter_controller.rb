@@ -50,13 +50,15 @@ class Api::V1::DataGetterController < ApplicationController
 	end
 
 	def inventory
+		@aday = day_range(@today)
+		data_val= Inventory.where(date:@aday.first ... @aday.last,product:Product.where(name:['Phenol','Hydrated Phenol'])).group(:date).order(date: :desc).sum(:value).to_json
 		inventory_phenol= Inventory.where(date: @today,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
 		inventory_benzene= Inventory.where(date: @today,product:Product.where(name:'Benzene')).sum(:value).round(2)
 		inventory_acetone= Inventory.where(date: @today,product:Product.where(name:'Acetone')).sum(:value).round(2)
 		inventory_propylene= Inventory.where(date: @today,product:Product.where(name:'Propylene')).sum(:value).round(2)
 		inventory_cumene= Inventory.where(date: @today,product:Product.where(name:'Cumene')).sum(:value).round(2)
 
-		render json:{data: {'overall':[{'name':'Phenol',"qty":inventory_phenol},{'name':'Acetone',"qty":inventory_acetone},
+		render json:{data: {'overall':[{'name': 'Phenol',"qty": inventory_phenol ,'day_wise': [data_val] },{'name':'Acetone',"qty":inventory_acetone},
 			{'name':'Propylene',"qty":inventory_propylene},{'name':'Cumene',"qty":inventory_cumene}],
 			'tankwise':[{'name':'Phenole Rundown tank 1',"qty":251.862,'level':68.32},
 				{'name':'Phenole Rundown tank 2',"qty":171.091,'level':46.23},
