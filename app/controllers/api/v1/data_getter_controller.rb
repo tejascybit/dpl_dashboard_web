@@ -51,7 +51,7 @@ class Api::V1::DataGetterController < ApplicationController
 
 	def inventory
 		@aday = day_range(@today)
-		data_val= Inventory.where(date:@aday.first ... @aday.last,product:Product.where(name:['Phenol','Hydrated Phenol'])).group(:date).order(date: :desc).sum(:value)
+		data_val= Inventory.where(date:@aday.first ... @aday.last,product:Product.where(name:['Phenol','Hydrated Phenol'])).group(:date).order(date: :desc).sum(:value).map{|x|  {'date' => x[0],'val' => x[1]}}
 		inventory_phenol= Inventory.where(date: @today,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
 		inventory_benzene= Inventory.where(date: @today,product:Product.where(name:'Benzene')).sum(:value).round(2)
 		inventory_acetone= Inventory.where(date: @today,product:Product.where(name:'Acetone')).sum(:value).round(2)
