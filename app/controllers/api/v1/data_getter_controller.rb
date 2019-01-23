@@ -51,15 +51,18 @@ class Api::V1::DataGetterController < ApplicationController
 
 	def inventory
 		@aday = day_range(@today)
-		data_val= Inventory.where(date:@aday.first ... @today,product:Product.where(name:['Phenol','Hydrated Phenol'])).group(:date).order(date: :desc).sum(:value).map{|x|  {'date' => x[0].to_s(:long),'val' => x[1]}}
 		inventory_phenol= Inventory.where(date: @today,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
-		inventory_benzene= Inventory.where(date: @today,product:Product.where(name:'Benzene')).sum(:value).round(2)
 		inventory_acetone= Inventory.where(date: @today,product:Product.where(name:'Acetone')).sum(:value).round(2)
 		inventory_propylene= Inventory.where(date: @today,product:Product.where(name:'Propylene')).sum(:value).round(2)
 		inventory_cumene= Inventory.where(date: @today,product:Product.where(name:'Cumene')).sum(:value).round(2)
-
-		render json:{data: {'overall':[{'name': 'Phenol',"qty": inventory_phenol ,'day_wise': data_val },{'name':'Acetone',"qty":inventory_acetone},
-			{'name':'Propylene',"qty":inventory_propylene},{'name':'Cumene',"qty":inventory_cumene}],
+		
+		data_val= Inventory.where(date:@aday.first ... @today,product:Product.where(name:['Phenol','Hydrated Phenol'])).group(:date).order(date: :desc).sum(:value).map{|x|  {'date' => x[0].to_s(:long),'val' => x[1]}}
+		data_ace= Inventory.where(date:@aday.first ... @today,product:Product.where(name:'Acetone')).group(:date).order(date: :desc).sum(:value).map{|x|  {'date' => x[0].to_s(:long),'val' => x[1]}}
+		data_pro= Inventory.where(date:@aday.first ... @today,product:Product.where(name:'Propylene')).group(:date).order(date: :desc).sum(:value).map{|x|  {'date' => x[0].to_s(:long),'val' => x[1]}}
+		data_cum= Inventory.where(date:@aday.first ... @today,product:Product.where(name:'Cumene')).group(:date).order(date: :desc).sum(:value).map{|x|  {'date' => x[0].to_s(:long),'val' => x[1]}}
+		
+		render json:{data: {'overall':[{'name': 'Phenol',"qty": inventory_phenol ,'day_wise': data_val },{'name':'Acetone',"qty":inventory_acetone,'day_wise': data_ace},
+			{'name':'Propylene',"qty":inventory_propylene,'day_wise': data_pro},{'name':'Cumene',"qty":inventory_cumene ,'day_wise': data_ace}],
 			'tankwise':[{'name':'Phenole Rundown tank 1',"qty":251.862,'level':68.32},
 				{'name':'Phenole Rundown tank 2',"qty":171.091,'level':46.23},
 				{'name':'Hydrated Phenol Rundown tank',"qty":334.986,'level':82.07}]}, success: true,message:""}
@@ -71,59 +74,45 @@ class Api::V1::DataGetterController < ApplicationController
 		else
 			prod = Product.where("name = ?",params[:name])
 		end
-				prod.each do |p|
-					p.tanks.each do |t|
-						invet = {}
-						tank_total = 	Inventory.where(date: @today,product_id: p.id, tank_id: t.id).sum(:value).round(2)
-						tank_level = 	Inventory.where(date: @today,product_id: p.id,tank_id: t.id).average(:tank_level)
-						invet['tank_name'] = t.name
-						invet['tank_total'] = tank_total
-						invet['tank_level'] = tank_level
-						invet_list.push(invet)
-					end
-				end
-
-
-
-
-			render json:{data: invet_list, success: true, message: ''}
-		#
-		# inventory_phenol= Inventory.where(date: @today,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
-		# inventory_benzene= Inventory.where(date: @today,product:Product.where(name:'Benzene')).sum(:value).round(2)
-		# inventory_acetone= Inventory.where(date: @today,product:Product.where(name:'Acetone')).sum(:value).round(2)
-		# inventory_propylene= Inventory.where(date: @today,product:Product.where(name:'Propylene')).sum(:value).round(2)
-		# inventory_cumene= Inventory.where(date: @today,product:Product.where(name:'Cumene')).sum(:value).round(2)
-		#
-		# tank_level = Tank.where(date: @today,product:Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
-
-
-	# 	render json:{data: {'overall':[{'name':'Phenol',"qty":inventory_phenol},{'name':'Acetone',"qty":inventory_acetone},
-	# 		{'name':'Propylene',"qty":inventory_propylene},{'name':'Cumene',"qty":inventory_cumene}],
-	# 		'tankwise':[{'name':'Phenole Rundown tank 1',"qty":251.862,'level':68.32},
-	# 			{'name':'Phenole Rundown tank 2',"qty":171.091,'level':46.23},
-	# 			{'name':'Hydrated Phenol Rundown tank',"qty":334.986,'level':82.07}]}, success: true,message:""}
+		prod.each do |p|
+			p.tanks.each do |t|
+				invet = {}
+				tank_total = 	Inventory.where(date: @today,product_id: p.id, tank_id: t.id).sum(:value).round(2)
+				tank_level = 	Inventory.where(date: @today,product_id: p.id,tank_id: t.id).average(:tank_level)
+				invet['tank_name'] = t.name
+				invet['tank_total'] = tank_total
+				invet['tank_level'] = tank_level
+				invet_list.push(invet)
+			end
+		end
+		render json:{data: invet_list, success: true, message: ''}
 end
 	def production
 		@aday = day_range(@yesterday)
 		if(params[:track_mode] == 'monthly')
 			@aday = [@yesterday.at_beginning_of_month,@aday.last] 
 		end
-		phenol_production_prd = Production.where(date: @aday.first..@aday.last, parameters: 'prd', product: Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
-		phenol_production_or = Production.where(date: @aday.first..@aday.last, parameters: 'or', product: Product.where(name:['Phenol','Hydrated Phenol'])).average(:value).round(2)
-		phenol_production_mtd = Production.where(date:@yesterday.at_beginning_of_month..@aday.last, parameters: 'prd', product: Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
+		phenol_production_prd = Production.where(date: @aday.first..@yesterday, parameters: 'prd', product: Product.where(name:['Phenol','Hydrated Phenol'])).sum(:value).round(2)
+		phenol_production_or = Production.where(date: @aday.first..@yesterday, parameters: 'or', product: Product.where(name:['Phenol','Hydrated Phenol'])).average(:value).round(2)
+		phenol_production_data = Production.where(date: @aday.first..@yesterday, parameters: 'prd', product: Product.where(name:['Phenol','Hydrated Phenol'])).group(:date).order(date: :desc).sum(:value).map{|x|  {'date' => x[0].to_s(:long),'val' => x[1]}}
 
-		cumene_production_prd = Production.where(date: @aday.first..@aday.last, parameters: 'prd', product: Product.where(name: 'Cumene')).sum(:value).round(2)
-		cumene_production_or = Production.where(date: @aday.first..@aday.last, parameters: 'or', product: Product.where(name: 'Cumene')).average(:value).round(2)
-		cumene_production_mtd = Production.where(date:@yesterday.at_beginning_of_month..@aday.last, parameters: 'prd', product: Product.where(name:'Cumene')).sum(:value).round(2)
+
+		
+		cumene_production_prd = Production.where(date: @aday.first..@yesterday, parameters: 'prd', product: Product.where(name: 'Cumene')).sum(:value).round(2)
+		cumene_production_or = Production.where(date: @aday.first..@yesterday, parameters: 'or', product: Product.where(name: 'Cumene')).average(:value).round(2)
+		cumene_production_data = Production.where(date: @aday.first..@yesterday, parameters: 'prd', product: Product.where(name:'Cumene')).group(:date).order(date: :desc).sum(:value).map{|x|  {'date' => x[0].to_s(:long),'val' => x[1]}}
 
 		ams_production_other = Production.where(date: @yesterday, product: Product.where(name: 'AMS', production_product_type: 'other')).sum(:value).round(2)
+		ams_production_data = Production.where(date: @yesterday, product: Product.where(name: 'AMS', production_product_type: 'other')).group(:date).order(date: :desc).sum(:value).map{|x|  {'date' => x[0].to_s(:long),'val' => x[1]}}
+
 		acetone_production_other = Production.where(date: @yesterday, product: Product.where(name: 'Acetone', production_product_type: 'other')).sum(:value).round(2)
-		benzene_drag_production_other = Production.where(date: @yesterday, product: Product.where(name: 'Benzene drag', production_product_type: 'other')).sum(:value).round(2)
+		acetone_production_data = Production.where(date: @yesterday, product: Product.where(name: 'Acetone', production_product_type: 'other')).group(:date).order(date: :desc).sum(:value).map{|x|  {'date' => x[0].to_s(:long),'val' => x[1]}}
+
 
 		production_from = @aday.first.to_s(:long)
-    production_to	= @aday.last.to_s(:long)
+    production_to	= @yesterday.to_s(:long)
 
-		render json: { data: {'production_from': production_from, 'production_to': production_to, 'plant': [{ 'name': 'Cumene', "qty": cumene_production_prd, 'operating_rate': cumene_production_or, 'downtime_hours': cumene_production_mtd}, { 'name': 'Phenol', "qty": phenol_production_prd, 'operating_rate': phenol_production_or, 'downtime_hours': phenol_production_mtd} ,{ 'name': 'Acetone', 'qty': acetone_production_other }, { 'name': 'AMS', 'qty': ams_production_other }] }, success: true, message: '' }
+		render json: { data: {'production_from': production_from, 'production_to': production_to, 'plant': [{ 'name': 'Cumene', "qty": cumene_production_prd, 'operating_rate': cumene_production_or,'day_wise': cumene_production_data}, { 'name': 'Phenol', "qty": phenol_production_prd, 'operating_rate': phenol_production_or,'day_wise': phenol_production_data} ,{ 'name': 'Acetone', 'qty': acetone_production_other,'day_wise': acetone_production_data }, { 'name': 'AMS', 'qty': ams_production_other,'day_wise': ams_production_data }] }, success: true, message: '' }
 
 
 	end
