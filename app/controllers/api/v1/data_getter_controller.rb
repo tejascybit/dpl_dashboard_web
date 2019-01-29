@@ -113,7 +113,7 @@ end
 		production_from = @aday.first.to_s(:long)
     production_to	= @yesterday.to_s(:long)
 
-		render json: { data: {'production_from': production_from, 'production_to': production_to, 'plant': [{ 'name': 'Cumene', "qty": cumene_production_prd, 'operating_rate': cumene_production_or,'day_wise': cumene_production_data}, { 'name': 'Phenol', "qty": phenol_production_prd, 'operating_rate': phenol_production_or,'day_wise': phenol_production_data} ,{ 'name': 'Acetone', 'qty': acetone_production_other,'day_wise': acetone_production_data }, { 'name': 'AMS', 'qty': ams_production_other,'day_wise': ams_production_data }] }, success: true, message: '' }
+		render json: { data: {'production_from': production_from, 'production_to': production_to, 'plant': [{ 'name': 'Phenol', "qty": phenol_production_prd, 'operating_rate': phenol_production_or,'day_wise': phenol_production_data, 'icon': 'ios-arrow-forward'} ,{ 'name': 'Acetone', 'qty': acetone_production_other,'day_wise': acetone_production_data , 'icon': 'ios-arrow-forward'},{ 'name': 'Cumene', "qty": cumene_production_prd, 'operating_rate': cumene_production_or,'day_wise': cumene_production_data , 'icon': 'ios-arrow-forward'}, { 'name': 'AMS', 'qty': ams_production_other,'day_wise': ams_production_data , 'icon': 'ios-arrow-forward'}] }, success: true, message: '' }
 
 
 	end
