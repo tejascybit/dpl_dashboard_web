@@ -56,14 +56,16 @@ class Api::V1::DataGetterController < ApplicationController
 		inventory_acetone= Inventory.where(date: @today,product:Product.where(name:'Acetone')).sum(:value).round(2)
 		inventory_propylene= Inventory.where(date: @today,product:Product.where(name:'Propylene')).sum(:value).round(2)
 		inventory_cumene= Inventory.where(date: @today,product:Product.where(name:'Cumene')).sum(:value).round(2)
-		
+		inventory_benzene= Inventory.where(date: @today,product:Product.where(name:'Benzene')).sum(:value).round(2)
+
 		data_val= Inventory.where(date:(@today - 7.days) ... @today,product:Product.where(name:['Phenol','Hydrated Phenol'])).group(:date).order(date: :desc).sum(:value).map{|x|  {'date' => x[0].to_s(:long),'val' => x[1].round(2)}}
 		data_ace= Inventory.where(date:(@today - 7.days) ... @today,product:Product.where(name:'Acetone')).group(:date).order(date: :desc).sum(:value).map{|x|  {'date' => x[0].to_s(:long),'val' => x[1].round(2)}}
 		data_pro= Inventory.where(date:(@today - 7.days) ... @today,product:Product.where(name:'Propylene')).group(:date).order(date: :desc).sum(:value).map{|x|  {'date' => x[0].to_s(:long),'val' => x[1].round(2)}}
 		data_cum= Inventory.where(date:(@today - 7.days) ... @today,product:Product.where(name:'Cumene')).group(:date).order(date: :desc).sum(:value).map{|x|  {'date' => x[0].to_s(:long),'val' => x[1].round(2)}}
+		data_ben= Inventory.where(date:(@today - 7.days) ... @today,product:Product.where(name:'Benzene')).group(:date).order(date: :desc).sum(:value).map{|x|  {'date' => x[0].to_s(:long),'val' => x[1].round(2)}}
 		
 		render json:{data: {'overall':[{'name': 'Phenol',"qty": inventory_phenol ,'day_wise': data_val },{'name':'Acetone',"qty":inventory_acetone,'day_wise': data_ace},
-			{'name':'Propylene',"qty":inventory_propylene,'day_wise': data_pro},{'name':'Cumene',"qty":inventory_cumene ,'day_wise': data_ace}],
+			{'name':'Propylene',"qty":inventory_propylene,'day_wise': data_pro},{'name': 'Cumene',"qty": inventory_cumene ,'day_wise': data_ace},{'name': 'Benzene',"qty": inventory_benzene ,'day_wise': data_ben}],
 			'tankwise':[{'name':'Phenole Rundown tank 1',"qty":251.862,'level':68.32},
 				{'name':'Phenole Rundown tank 2',"qty":171.091,'level':46.23},
 				{'name':'Hydrated Phenol Rundown tank',"qty":334.986,'level':82.07}]}, success: true,message:""}
