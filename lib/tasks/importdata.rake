@@ -4,8 +4,8 @@ include ApplicationHelper
 namespace :importdata do
   desc "TODO"
   task get_inventory: :environment do
-    start_date = day_range(Date.today).first.strftime('%d-%m-%Y')
-    end_date = day_range(Date.today).last.strftime('%d-%m-%Y')
+    start_date = day_range(4.days.ago).first.strftime('%d-%m-%Y')
+    end_date = day_range(4.days.ago).last.strftime('%d-%m-%Y')
    Tank.all.each do |tank|
     token= AccessCode.last.get_access_code
     u = 'https://dnlapps.dnlpune.com/DPLPlan/OpeningInventory?tankNumber=' + tank.tank_no + '&startDate=' + start_date + '&endDate=' + end_date + '&accessCode=' + token
