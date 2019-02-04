@@ -64,7 +64,7 @@ namespace :importdata do
             plans.date = date.to_date
             plans.product_id = product.id
             plans.value = (((@data['data'][dkey]['planned']).to_f)/day_diff)
-            # plans.save
+            plans.save
           end
           if production.blank?
             production = Production.new
