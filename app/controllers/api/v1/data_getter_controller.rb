@@ -105,10 +105,10 @@ end
 		cumene_production_or = Production.where(date: @aday.first..@yesterday, parameters: 'or', product: Product.where(name: 'Cumene')).average(:value).round(2)
 		cumene_production_data = Production.where(date: @aday.first..@yesterday, parameters: 'prd', product: Product.where(name:'Cumene')).group(:date).order(date: :desc).sum(:value).map{|x|  {'date' => x[0].to_s(:long),'val' => x[1].round(2)}}
 
-		ams_production_other = Production.where(date: @yesterday, product: Product.where(name: 'AMS', production_product_type: 'other')).sum(:value).round(2)
+		ams_production_other = Production.where(date: @aday.first..@yesterday, product: Product.where(name: 'AMS', production_product_type: 'other')).sum(:value).round(2)
 		ams_production_data = Production.where(date: @aday.first..@yesterday, product: Product.where(name: 'AMS', production_product_type: 'other')).group(:date).order(date: :desc).sum(:value).map{|x|  {'date' => x[0].to_s(:long),'val' => x[1].round(2)}}
 
-		acetone_production_other = Production.where(date: @yesterday, product: Product.where(name: 'Acetone', production_product_type: 'other')).sum(:value).round(2)
+		acetone_production_other = Production.where(date: @aday.first..@yesterday, product: Product.where(name: 'Acetone', production_product_type: 'other')).sum(:value).round(2)
 		acetone_production_data = Production.where(date: @aday.first..@yesterday, product: Product.where(name: 'Acetone', production_product_type: 'other')).group(:date).order(date: :desc).sum(:value).map{|x|  {'date' => x[0].to_s(:long),'val' => x[1].round(2)}}
 
 
