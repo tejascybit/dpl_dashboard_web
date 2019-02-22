@@ -112,10 +112,14 @@ end
 		acetone_production_data = Production.where(date: @aday.first..@yesterday, product: Product.where(name: 'Acetone', production_product_type: 'other')).group(:date).order(date: :desc).sum(:value).map{|x|  {'date' => x[0].to_s(:long),'val' => x[1].round(2)}}
 
 
+		heavies_production_other = Production.where(date: @aday.first..@yesterday, product: Product.where(name: 'Heavies', production_product_type: 'other')).sum(:value).round(2)
+		heavies_production_data = Production.where(date: @aday.first..@yesterday, product: Product.where(name: 'Heavies', production_product_type: 'other')).group(:date).order(date: :desc).sum(:value).map{|x|  {'date' => x[0].to_s(:long),'val' => x[1].round(2)}}
+
+
 		production_from = @aday.first.to_s(:long)
     production_to	= @yesterday.to_s(:long)
 
-		render json: { data: {'production_from': production_from, 'production_to': production_to, 'plant': [{ 'name': 'Cumene', "qty": cumene_production_prd, 'operating_rate': cumene_production_or,'day_wise': cumene_production_data , 'icon': 'ios-arrow-forward'},{ 'name': 'Phenol', "qty": phenol_production_prd, 'operating_rate': phenol_production_or,'day_wise': phenol_production_data, 'icon': 'ios-arrow-forward'} ,{ 'name': 'Acetone', 'qty': acetone_production_other,'day_wise': acetone_production_data , 'icon': 'ios-arrow-forward'}, { 'name': 'AMS', 'qty': ams_production_other,'day_wise': ams_production_data , 'icon': 'ios-arrow-forward'}] }, success: true, message: '' }
+		render json: { data: {'production_from': production_from, 'production_to': production_to, 'plant': [{ 'name': 'Cumene', "qty": cumene_production_prd, 'operating_rate': cumene_production_or,'day_wise': cumene_production_data , 'icon': 'ios-arrow-forward'},{ 'name': 'Phenol', "qty": phenol_production_prd, 'operating_rate': phenol_production_or,'day_wise': phenol_production_data, 'icon': 'ios-arrow-forward'} ,{ 'name': 'Acetone', 'qty': acetone_production_other,'day_wise': acetone_production_data , 'icon': 'ios-arrow-forward'}, { 'name': 'AMS', 'qty': ams_production_other,'day_wise': ams_production_data , 'icon': 'ios-arrow-forward'}, { 'name': 'Heavies', 'qty': heavies_production_other,'day_wise': heavies_production_data , 'icon': 'ios-arrow-forward'}] }, success: true, message: '' }
 
 
 	end
